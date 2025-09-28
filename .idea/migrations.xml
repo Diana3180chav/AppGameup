@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectMigrations">
+    <option name="MigrateToGradleLocalJavaHome">
+      <set>
+        <option value="$PROJECT_DIR$/../../../../../Ingeniería en Informática/2do año/Desarrollo aplicaciones/EV 2/Levelup_gamer" />
+      </set>
+    </option>
+  </component>
+</project>
