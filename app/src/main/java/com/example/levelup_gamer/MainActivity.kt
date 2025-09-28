@@ -25,6 +25,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     Levelup_gamerTheme {
-        HomeScreen()
+        HomeScreen() //comentario para subir nueva rama
     }
 }
