@@ -47,28 +47,31 @@ fun HomeScreenCompact() { //con esta función establecemos las principales carac
                             contentScale = ContentScale.Fit
                         )
 
-                        Text(
-                            text = "App LevelUP Gamer",
-                            color = textoPrincipal,
-                            style = MaterialTheme.typography.titleLarge
-                        )
+
+                        Button(onClick = { /* acá podemos poner una acción que se haga cuando se presione el botón*/ },
+                            colors = ButtonDefaults.buttonColors( //busqué información y en esta sección podemos configurar el color del botón
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )) {
+                            Text(text = "Inicio sesión",
+                                style = MaterialTheme.typography.titleMedium)
+                        }
+
+                        Button(onClick = { /* acá podemos poner una acción que se haga cuando se presione el botón*/ },
+                            colors = ButtonDefaults.buttonColors( //busqué información y en esta sección podemos configurar el color del botón
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )) {
+                            Text(text = "Registro",
+                                style = MaterialTheme.typography.titleMedium)
+                        }
+
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = fondoPrincipal
                 )
             )
-        },
-        bottomBar ={ //Esto sería como el footer
-            BottomAppBar (
-                containerColor = fondoPrincipal,
-                contentColor = Color.White
-            ) {
-                Text(
-                    text = "footer",
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
         }
     ){ innerPadding ->
         Column ( //Es el contenido central...es como el main

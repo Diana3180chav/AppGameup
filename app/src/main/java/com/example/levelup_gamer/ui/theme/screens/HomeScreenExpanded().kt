@@ -58,17 +58,6 @@ fun HomeScreenExpanded() { //con esta función establecemos las principales cara
                     containerColor = MaterialTheme.colorScheme.primary
                 )
             )
-        },
-        bottomBar ={ //Esto sería como el footer
-            BottomAppBar (
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ) {
-                Text(
-                    text = "footer",
-                    modifier = Modifier.padding(8.dp)
-                )
-            }
         }
     ){ innerPadding ->
         Column ( //Es el contenido central...es como el main
