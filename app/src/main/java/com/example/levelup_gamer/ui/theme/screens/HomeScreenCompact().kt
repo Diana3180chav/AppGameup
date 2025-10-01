@@ -28,7 +28,7 @@ import com.example.levelup_gamer.ui.theme.textoPrincipal
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.BottomAppBar
 
-@OptIn( ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenCompact() { //con esta función establecemos las principales características del contenedor y del diseño
     Scaffold( //es el contenedor principal que organiza las zonas típicas de una pantalla
@@ -59,8 +59,8 @@ fun HomeScreenCompact() { //con esta función establecemos las principales carac
                 )
             )
         },
-        bottomBar ={ //Esto sería como el footer
-            BottomAppBar (
+        bottomBar = { //Esto sería como el footer
+            BottomAppBar(
                 containerColor = fondoPrincipal,
                 contentColor = Color.White
             ) {
@@ -70,14 +70,14 @@ fun HomeScreenCompact() { //con esta función establecemos las principales carac
                 )
             }
         }
-    ){ innerPadding ->
-        Column ( //Es el contenido central...es como el main
+    ) { innerPadding ->
+        Column( //Es el contenido central...es como el main
             modifier = Modifier
                 .padding(innerPadding) //deja espacio debajo del AppBar
                 .fillMaxSize()
                 .padding(16.dp),// margen alrededor del contenido
             verticalArrangement = Arrangement.spacedBy(20.dp) // espacio entre cada elemento
-        ){
+        ) {
             Text( // acá establecemos un texto estándar y llámamos características de color y style que ya están definidas
                 text = "Contenido principal",
                 color = MaterialTheme.colorScheme.primary,

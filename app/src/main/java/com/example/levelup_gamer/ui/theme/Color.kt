@@ -18,4 +18,8 @@ val acentoVerde = Color(0xFF39FF14)
 val textoPrincipal = Color(0xFFFFFFFF)
 val textosecundario = Color(0xFFD3D3D3)
 
+// Colores Register
+val registerFondo = Color(0x7021063F)
+val registerTitle = Color(0xFF000000)
+val registerlabel = Color(0xFFD3D3D3)
 

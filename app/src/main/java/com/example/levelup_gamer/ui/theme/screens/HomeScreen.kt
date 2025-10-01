@@ -10,8 +10,8 @@ fun  HomeScreen() {
     val windowSizeClass = obtenerWindowSizeClass()
     Log.d("HomeScreen", "WidthSizeClass: ${windowSizeClass.widthSizeClass}")
     when (windowSizeClass.widthSizeClass){
-        WindowWidthSizeClass.Compact -> HomeScreenCompact()
-        WindowWidthSizeClass.Medium -> HomeScreenMedium()
-        WindowWidthSizeClass.Expanded -> HomeScreenExpanded()
+        WindowWidthSizeClass.Compact -> HomeScreenCompact() //versión para pantallas pequeñas (celulares).
+        WindowWidthSizeClass.Medium -> HomeScreenMedium() //versión para pantallas medianas (tablets verticales).
+        WindowWidthSizeClass.Expanded -> HomeScreenExpanded() //versión para pantallas grandes (tablets horizontales o desktop).
     }
 }
