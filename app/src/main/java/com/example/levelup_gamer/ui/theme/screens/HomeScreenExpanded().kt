@@ -80,20 +80,7 @@ fun HomeScreenExpanded(onNavigateToRegister: () -> Unit) { //con esta función e
                 style = MaterialTheme.typography.titleLarge
             )
 
-            /*Button(onClick = { /* acá podemos poner una acción que se haga cuando se presione el botón*/ },
-                    colors = ButtonDefaults.buttonColors( //busqué información y en esta sección podemos configurar el color del botón
-                        containerColor = MaterialTheme.colorScheme.onPrimary,
-                        contentColor = MaterialTheme.colorScheme.onSurface
-                    )) {
-                Text(text = "Texto de prueba",
-                    style = MaterialTheme.typography.titleMedium)
-            }
-
-            */
-
 
         }
     }
 }
-
-//La versión desktop no está al 100% lista
