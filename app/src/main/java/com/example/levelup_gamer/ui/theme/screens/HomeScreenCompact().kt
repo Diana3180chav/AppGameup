@@ -46,36 +46,36 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit) {//con esta función est
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
 
     val drawerContent: @Composable () -> Unit = {
-        Column(
+        Column( // trabajamo el menú en columna
             modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             Text("Menú", style = MaterialTheme.typography.titleLarge) //le damos unos estilos
-            HorizontalDivider() //nos da una sepación entre elementos
+            HorizontalDivider() //nos da una sepación entre elementos con una línea
 
             Button(onClick = { //Esto nos indica qu cuando se presiona el botón algo pasará...
                 scope.launch { drawerState.close()}  //con esto se cierra el menú
             },
-                colors = ButtonDefaults.buttonColors(
+                colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
                     containerColor = MaterialTheme.colorScheme.onPrimary,
                     contentColor = MaterialTheme.colorScheme.onSurface
 
                 ),
-                modifier = Modifier.padding(8.dp) // esto es para que ocupe todo el ancho
+                modifier = Modifier.padding(8.dp) //indicamos cuanto espacio tendrá el botón
             ) {
                 Text("Inicio sesón", style = MaterialTheme.typography.titleMedium)
             }
             HorizontalDivider()
             Button(onClick = {
-                onNavigateToRegister()
+                onNavigateToRegister() // cuando se haga click en el botón, se redireccionará el usuario a Register
                 scope.launch{drawerState.close()}
             },
-                colors = ButtonDefaults.buttonColors(
+                colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
                     containerColor = MaterialTheme.colorScheme.onPrimary,
                     contentColor = MaterialTheme.colorScheme.onSurface
 
                 ),
-                modifier = Modifier.padding(12.dp)
+                modifier = Modifier.padding(12.dp) // indicamos cuanto espacio tendrá el botón
             ) {
                 Text(text = "Registro", style = MaterialTheme.typography.titleMedium)
             }
@@ -98,9 +98,9 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit) {//con esta función est
                                 }
                             ) {
                                 Icon(
-                                    Icons.Filled.Menu,
+                                    Icons.Filled.Menu, // llamamos un icono de menú y le damos estilos
                                     contentDescription = "Menu principal",
-                                    tint = MaterialTheme.colorScheme.onSurface
+                                    tint = MaterialTheme.colorScheme.onPrimary
                                 )
                             }
 
@@ -112,24 +112,6 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit) {//con esta función est
                                     .padding(end = 8.dp),
                                 contentScale = ContentScale.Fit
                             )
-
-
-                            /* Button(onClick = { /* acá podemos poner una acción que se haga cuando se presione el botón*/ },
-                                colors = ButtonDefaults.buttonColors( //busqué información y en esta sección podemos configurar el color del botón
-                                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                                    contentColor = MaterialTheme.colorScheme.onSurface
-                                )) {
-                                Text(text = "Inicio sesión",
-                                    style = MaterialTheme.typography.titleMedium)
-                            }
-                            Button(onClick = { onNavigateToRegister() }, //Acá el botón registro en cualquier versión llama al lambda, el cual ejecuta navController.navigate("register")
-                                colors = ButtonDefaults.buttonColors( //busqué información y en esta sección podemos configurar el color del botón
-                                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                                    contentColor = MaterialTheme.colorScheme.onSurface
-                                )) {
-                                Text(text = "Registro",
-                                    style = MaterialTheme.typography.titleMedium)
-                            } */
 
                         }
                     },
