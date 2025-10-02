@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun MyModalDrawer(
+fun MyModalDrawer( //acá manejamos lo relacionado al menú hamburguesa
     drawerState: DrawerState,
     drawerContent: @Composable () -> Unit,
     mainContent: @Composable () -> Unit){
