@@ -1,6 +1,5 @@
 package com.example.levelup_gamer.ui.theme.screens
 
-import android.app.Activity // necesario ara castear el contexto de Compose a Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,15 +21,13 @@ import com.example.levelup_gamer.R
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import com.example.levelup_gamer.ui.theme.fondoPrincipal
-import com.example.levelup_gamer.ui.theme.textoPrincipal
 import androidx.compose.foundation.layout.Row
-import androidx.compose.material3.BottomAppBar
+import com.example.levelup_gamer.ui.theme.screens.register.RegisterScreen
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenCompact() { //con esta función establecemos las principales características del contenedor y del diseño
+fun HomeScreenCompact(onNavigateToRegister: () -> Unit) { //con esta función establecemos las principales características del contenedor y del diseño
     Scaffold( //es el contenedor principal que organiza las zonas típicas de una pantalla
         topBar = { // es similar al header
             TopAppBar(
@@ -57,7 +54,7 @@ fun HomeScreenCompact() { //con esta función establecemos las principales carac
                                 style = MaterialTheme.typography.titleMedium)
                         }
 
-                        Button(onClick = { /* acá podemos poner una acción que se haga cuando se presione el botón*/ },
+                        Button(onClick = { onNavigateToRegister() },
                             colors = ButtonDefaults.buttonColors( //busqué información y en esta sección podemos configurar el color del botón
                                 containerColor = MaterialTheme.colorScheme.onPrimary,
                                 contentColor = MaterialTheme.colorScheme.onSurface

@@ -1,6 +1,5 @@
 package com.example.levelup_gamer.ui.theme.screens
 
-import android.app.Activity // necesario ara castear el contexto de Compose a Activity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,7 +27,7 @@ import com.example.levelup_gamer.ui.theme.textoPrincipal
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
 
-fun HomeScreenExpanded() { //con esta función establecemos las principales características del contenedor y del diseño
+fun HomeScreenExpanded(onNavigateToRegister: () -> Unit) { //con esta función establecemos las principales características del contenedor y del diseño
 
     Scaffold( //es el contenedor principal que organiza las zonas típicas de una pantalla
         topBar = { // es similar al header
@@ -52,6 +50,15 @@ fun HomeScreenExpanded() { //con esta función establecemos las principales cara
                             color = textoPrincipal,
                             style = MaterialTheme.typography.titleLarge
                         )
+
+                        Button(onClick = { onNavigateToRegister() },
+                            colors = ButtonDefaults.buttonColors( //busqué información y en esta sección podemos configurar el color del botón
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                contentColor = MaterialTheme.colorScheme.onSurface
+                            )) {
+                            Text(text = "Registro",
+                                style = MaterialTheme.typography.titleMedium)
+                        }
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
