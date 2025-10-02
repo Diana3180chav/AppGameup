@@ -6,6 +6,9 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.*
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.levelup_gamer.ui.theme.Levelup_gamerTheme
 import com.example.levelup_gamer.ui.theme.screens.HomeScreen
 import com.example.levelup_gamer.ui.theme.screens.register.RegisterScreen
@@ -16,8 +19,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Levelup_gamerTheme {
-                //HomeScreen()
-                RegisterScreen()
+                val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = "home") {
+                    composable("home") {
+                        HomeScreen(
+                            onNavigateToRegister = { navController.navigate("register") }
+                        )
+                    }
+                    composable("register") {
+                        RegisterScreen()
+                    }
+                }
             }
         }
     }
@@ -27,8 +39,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GreetingPreview() {
     Levelup_gamerTheme {
-        RegisterScreen()
-        //HomeScreen() //comentario para subir nueva rama
+        //RegisterScreen()
+        HomeScreen(onNavigateToRegister = {}) //comentario para subir nueva rama
     }
 }
 

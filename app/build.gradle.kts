@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.example.levelup_gamer" // cambia por tu package
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.levelup_gamer"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
@@ -39,6 +39,7 @@ android {
 dependencies {
     // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.navigation.compose)
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
     // Compose UI
