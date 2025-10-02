@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import com.example.levelup_gamer.ui.theme.fondoPrincipal
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Divider
@@ -78,6 +79,20 @@ fun HomeScreenMedium(onNavigateToRegister: () -> Unit) {//con esta función esta
                 modifier = Modifier.padding(12.dp) // indicamos cuanto espacio tendrá el botón
             ) {
                 Text(text = "Registro", style = MaterialTheme.typography.titleMedium)
+            }
+            HorizontalDivider()
+            IconButton(// se agrega un icono de una X para cerrar el menú
+                onClick = {
+                    scope.launch {
+                        drawerState.close()
+                    }
+                }
+            ) {
+                Icon(
+                    Icons.Filled.Close, // llamamos un icono de menú y le damos estilos
+                    contentDescription = "Cerrar menú",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
             }
         }
     }
