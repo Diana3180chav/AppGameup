@@ -54,7 +54,7 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit) { //con esta función es
                                 style = MaterialTheme.typography.titleMedium)
                         }
 
-                        Button(onClick = { onNavigateToRegister() },
+                        Button(onClick = { onNavigateToRegister() }, //Acá el botón registro en cualquier versión llama al lambda, el cual ejecuta navController.navigate("register")
                             colors = ButtonDefaults.buttonColors( //busqué información y en esta sección podemos configurar el color del botón
                                 containerColor = MaterialTheme.colorScheme.onPrimary,
                                 contentColor = MaterialTheme.colorScheme.onSurface
