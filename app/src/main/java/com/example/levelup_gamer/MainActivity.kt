@@ -13,6 +13,7 @@ import com.example.levelup_gamer.ui.theme.Levelup_gamerTheme
 import com.example.levelup_gamer.ui.theme.screens.HomeScreen
 import com.example.levelup_gamer.ui.theme.screens.register.RegisterScreen
 
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +30,11 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                     composable("register") {
-                        RegisterScreen() //Eventualmente NavHost mostrará RegisterScreen()
+                        RegisterScreen(
+                            onNavigateToHome = { navController.navigate("home") }
+                        ) //Eventualmente NavHost mostrará RegisterScreen()
                     }
+
                 }
             }
         }

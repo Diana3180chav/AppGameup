@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 import com.example.levelup_gamer.ui.theme.utils.obtenerWindowSizeClass
 
 @Composable
-fun  HomeScreen( onNavigateToRegister: () -> Unit) {
+fun  HomeScreen( onNavigateToRegister: () -> Unit,) {
     val windowSizeClass = obtenerWindowSizeClass()
     Log.d("HomeScreen", "WidthSizeClass: ${windowSizeClass.widthSizeClass}")
     when (windowSizeClass.widthSizeClass){
