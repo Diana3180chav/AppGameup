@@ -41,7 +41,8 @@ import kotlinx.coroutines.launch
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenExpanded(onNavigateToRegister: () -> Unit) {//con esta función establecemos las principales características del contenedor y del diseño
+fun HomeScreenExpanded(onNavigateToRegister: () -> Unit,
+                       onNavigateToLogin: () -> Unit) {//con esta función establecemos las principales características del contenedor y del diseño
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) //acá creamos el estado del menú inicialmente
 
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
@@ -54,7 +55,8 @@ fun HomeScreenExpanded(onNavigateToRegister: () -> Unit) {//con esta función es
             Text("Menú", style = MaterialTheme.typography.titleLarge) //le damos unos estilos
             HorizontalDivider() //nos da una sepación entre elementos con una línea
 
-            Button(onClick = { //Esto nos indica qu cuando se presiona el botón algo pasará...
+            Button(onClick = {
+                onNavigateToLogin()//Esto nos indica qu cuando se presiona el botón algo pasará...
                 scope.launch { drawerState.close()}  //con esto se cierra el menú
             },
                 colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
