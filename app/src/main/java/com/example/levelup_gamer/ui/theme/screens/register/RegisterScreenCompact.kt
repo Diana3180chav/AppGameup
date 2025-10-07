@@ -16,7 +16,7 @@ import com.example.levelup_gamer.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreenCompact() {
+fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { (mutableStateOf("")) }
@@ -27,28 +27,25 @@ fun RegisterScreenCompact() {
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Image(
-                        painter = painterResource(id = R.mipmap.logo),
-                        contentDescription = "Logo App Level-Up Gamer",
-                        modifier = Modifier
-                            .height(40.dp)
-                            .padding(end = 8.dp),
-                        contentScale = ContentScale.Fit
-                    )
-
-                    Text(
-                        text = "App Level-Up Store",
-                        color = registerTitle,
-                        style = MaterialTheme.typography.titleLarge
-                    )
+                    IconButton(
+                        onClick = { onNavigateToHome() },
+                        modifier = Modifier.padding(start = 8.dp)
+                    ){
+                        Image(
+                            painter = painterResource(id = R.mipmap.logo),
+                            contentDescription = "Logo App Level-Up Gamer",
+                            modifier = Modifier
+                                .height(40.dp)
+                                .padding(end = 8.dp),
+                            contentScale = ContentScale.Fit
+                        )
+                    }
                 }
-            })
-    }, bottomBar = {
-        BottomAppBar {
-            Text(
-                text = "App LevelUP Gamer", modifier = Modifier.padding(8.dp)
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = fondoPrincipal
             )
-        }
+        )
     }) { innerPadding ->
 
         Column(
