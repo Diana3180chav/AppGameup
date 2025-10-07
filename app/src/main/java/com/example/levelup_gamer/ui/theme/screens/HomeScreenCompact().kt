@@ -146,12 +146,94 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                     .padding(16.dp),// margen alrededor del contenido
                 verticalArrangement = Arrangement.spacedBy(20.dp) // espacio entre cada elemento
             ){
-                Text( // acá establecemos un texto estándar y llámamos características de color y style que ya están definidas
-                    text = "Contenido principal",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleLarge
+                Image( //imagen del posible carousel
+                    painter = painterResource(id = R.mipmap.carousel),
+                    contentDescription = "Logo App Level UP Gamer",
                 )
+                //Listado de productos
 
+                Column( // a cada producto en coliumna
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ){
+                    //producto 1
+
+                    Image(
+                        painter = painterResource(id = R.mipmap.producto1),
+                        contentDescription = "Logo App Level UP Gamer",
+                        modifier = Modifier
+                            .height(80.dp) // tamaño reducido para caber en el AppBar
+                    )
+                    Text(
+                        text = "Detalle del " +
+                                "producto",
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
+                            containerColor = MaterialTheme.colorScheme.onPrimary,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+
+                        ),
+                        modifier = Modifier.padding(8.dp)
+                    ){
+                        Text("Agregar al carrito")
+                    }
+
+                    HorizontalDivider()
+
+                    //producto 2
+
+                    Image(
+                        painter = painterResource(id = R.mipmap.producto2),
+                        contentDescription = "Logo App Level UP Gamer",
+                        modifier = Modifier
+                            .height(80.dp) // tamaño reducido para caber en el AppBar
+                    )
+                    Text(
+                        text = "Detalle del " +
+                                "producto",
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
+                            containerColor = MaterialTheme.colorScheme.onPrimary,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+
+                        ),
+                        modifier = Modifier.padding(8.dp)
+                    ){
+                        Text("Agregar al carrito")
+                    }
+
+                    HorizontalDivider()
+
+                    //producto 3
+
+                    Image(
+                        painter = painterResource(id = R.mipmap.producto3),
+                        contentDescription = "Logo App Level UP Gamer",
+                        modifier = Modifier
+                            .height(80.dp) // tamaño reducido para caber en el AppBar
+                    )
+                    Text(
+                        text = "Detalle del " +
+                                "producto",
+                        style = MaterialTheme.typography.titleSmall
+                    )
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
+                            containerColor = MaterialTheme.colorScheme.onPrimary,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+
+                        ),
+                        modifier = Modifier.padding(8.dp)
+                    ){
+                        Text("Agregar al carrito")
+                    }
+                }
 
             }
         }
