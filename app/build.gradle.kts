@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.levelup_gamer" // cambia por tu package
+    namespace = "com.example.levelup_gamer"
     compileSdk = 36
 
     defaultConfig {
@@ -27,7 +27,6 @@ android {
     }
 
     composeOptions {
-        // Se toma de la Version Catalog si quieres, sino lo puedes dejar hardcode
         kotlinCompilerExtensionVersion = "1.5.14"
     }
 
@@ -39,7 +38,6 @@ android {
 dependencies {
     // Compose BOM
     implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.navigation.compose)
     androidTestImplementation(platform(libs.androidx.compose.bom))
 
     // Compose UI
@@ -48,10 +46,28 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // Activity & Lifecycle
+    // Material3 - Window Size Classes
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
+
+    // Navigation & Lifecycle
+    implementation("androidx.navigation:navigation-compose:2.7.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0-rc02")
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.6.2")
+
+    // Coroutines
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+
+    // Activity & Core
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.core.ktx)
 
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.0")
-// revisa la versión actual
+    // Tests
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
+
+    debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 }

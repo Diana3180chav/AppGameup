@@ -14,8 +14,8 @@ fun LoginScreen(
     val windowSizeClass = obtenerWindowSizeClass()
     Log.d("LoginScreen", "WidthSizeClass: ${windowSizeClass.widthSizeClass}")
     when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> LoginScreenCompact(onLoginSuccess, onNavigateToRegister)
-        WindowWidthSizeClass.Medium  -> LoginScreenMedium(onLoginSuccess, onNavigateToRegister)
-        WindowWidthSizeClass.Expanded -> LoginScreenExpanded(onLoginSuccess, onNavigateToRegister)
+        WindowWidthSizeClass.Compact -> LoginScreenCompact(onLoginSuccess, onNavigateToRegister = onNavigateToRegister)
+        WindowWidthSizeClass.Medium  -> LoginScreenMedium(onLoginSuccess, onNavigateToRegister = onNavigateToRegister)
+        WindowWidthSizeClass.Expanded -> LoginScreenExpanded(onLoginSuccess, onNavigateToRegister = onNavigateToRegister)
     }
 }

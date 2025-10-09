@@ -50,11 +50,6 @@ fun LoginScreenCompact(
                     }
                 }
             )
-        },
-        bottomBar = {
-            BottomAppBar(containerColor = loginBg, contentColor = textOnDark) {
-                Text("App LevelUP Gamer", Modifier.padding(8.dp))
-            }
         }
     ) { innerPadding ->
         Column(

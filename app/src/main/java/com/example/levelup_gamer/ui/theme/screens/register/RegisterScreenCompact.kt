@@ -18,6 +18,7 @@ import com.example.levelup_gamer.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
+    var rut by remember { mutableStateOf("") }
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { (mutableStateOf("")) }
@@ -74,6 +75,20 @@ fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                OutlinedTextField(
+                    value = rut,
+                    onValueChange = { rut = it },
+                    label = { Text("Rut") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = registerlabel,
+                        unfocusedTextColor = registerlabel,
+                        cursorColor = registerlabel,
+                        focusedLabelColor = registerlabel,
+                        unfocusedLabelColor = registerlabel
+
+                    )
+                )
                 OutlinedTextField(
                     value = username,
                     onValueChange = { username = it },
