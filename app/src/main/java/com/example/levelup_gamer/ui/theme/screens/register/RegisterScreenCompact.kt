@@ -1,5 +1,6 @@
 package com.example.levelup_gamer.ui.theme.screens.register
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -10,18 +11,22 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import com.example.levelup_gamer.ui.theme.*
 
 
 import com.example.levelup_gamer.R
+import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
-    var rut by remember { mutableStateOf("") }
-    var username by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
-    var password by remember { (mutableStateOf("")) }
+fun RegisterScreenCompact(onNavigateToHome: () -> Unit,
+                          onNavigateToLogin: () -> Unit,
+                          viewModel: UsuarioViewModel) {
+    val estado by viewModel.estado.collectAsState()
+    val context = LocalContext.current
+    val registrado by viewModel.registroExitoso.collectAsState() //collectAsState convierte el StateFlow en un State de Compose.
 
     Scaffold(containerColor = registerFondo, topBar = {
         TopAppBar(
@@ -75,10 +80,17 @@ fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                //campo rut
                 OutlinedTextField(
-                    value = rut,
-                    onValueChange = { rut = it },
+                    value = estado.rut,
+                    onValueChange = viewModel:: onRutChange,
                     label = { Text("Rut") },
+                    isError = estado.errores.rut != null,
+                    supportingText = {
+                        estado.errores.rut?.let{
+                           Text(it, color = MaterialTheme.colorScheme.error)
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = registerlabel,
@@ -89,10 +101,17 @@ fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
 
                     )
                 )
+                //campo del nombre del usuario
                 OutlinedTextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = { Text("Usuario") },
+                    value = estado.userNam,
+                    onValueChange = viewModel:: onNombreChange,
+                    label = { Text("Nombre de usuario") },
+                    isError = estado.errores.userNam != null,
+                    supportingText = {
+                        estado.errores.userNam?.let{
+                            Text(it, color = MaterialTheme.colorScheme.error)
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = registerlabel,
@@ -103,10 +122,17 @@ fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
 
                     )
                 )
+                //campo del correo
                 OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Correo") },
+                    value = estado.email,
+                    onValueChange = viewModel:: onEmailChange,
+                    label = { Text("Correo electrónico") },
+                    isError = estado.errores.email != null,
+                    supportingText = {
+                        estado.errores.email?.let{
+                            Text(it, color = MaterialTheme.colorScheme.error)
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedTextColor = registerlabel,
@@ -117,12 +143,19 @@ fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
 
                     )
                 )
+                //campo del correo
                 OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
+                    value = estado.password,
+                    onValueChange = viewModel:: onPasswordChange,
                     label = { Text("Contraseña") },
+                    isError = estado.errores.password != null,
+                    supportingText = {
+                        estado.errores.password?.let{
+                            Text(it, color = MaterialTheme.colorScheme.error)
+                        }
+                    },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
+                    colors = OutlinedTextFieldDefaults.colors( //acá le damos ciertas propiedades de color
                         focusedTextColor = registerlabel,
                         unfocusedTextColor = registerlabel,
                         cursorColor = registerlabel,
@@ -130,10 +163,22 @@ fun RegisterScreenCompact(onNavigateToHome: () -> Unit) {
                         unfocusedLabelColor = registerlabel
                     )
                 )
+                //botón
                 Button(
-                    onClick = {/*Accion Futura*/ }, modifier = Modifier.fillMaxWidth()
+                    onClick = {
+                        if(viewModel.validarFormulario()){ // validamos que cumpla todas las condiciones
+                            Toast.makeText(context, "Registro exitoso. Rut: ${estado.rut} - Usuario: ${estado.userNam}. Serás redirigido para iniciar sesión", Toast.LENGTH_LONG).show() // acá creamos un mensaje cuando se registra
+                            viewModel.limpiarCampos() //limpiamos los campos
+                            viewModel.registrarUsuario() //llamamos la función que ayuda a validar el registro del usuario vía consola
+                            onNavigateToLogin() //después enviamos el usuario al login para que inicie sesión
+                        }
+                    }, modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Registrarse")
+                }
+
+                if(registrado){
+                    viewModel.limpiarRegistroExitoso() //llama la función que limpia el formulario de registro
                 }
             }
         }
