@@ -73,4 +73,7 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+
+    //DataStore para el uso sin una dependencia android
+    implementation("androidx.datastore:datastore-preferences-core:1.1.7")
 }

@@ -5,11 +5,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.levelup_gamer.ui.theme.screens.home.HomeScreen
+import com.example.levelup_gamer.ui.theme.screens.homeScreen.HomeScreen
 import com.example.levelup_gamer.ui.theme.screens.login.LoginScreen
 import com.example.levelup_gamer.ui.theme.screens.register.RegisterScreen
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
-import kotlinx.coroutines.selects.RegistrationFunction
 
 
 @Composable
@@ -38,7 +37,7 @@ fun AppNavigation(){
                 onLoginSuccess = {
                     navController.navigate("home") { // env´ía al usuario a la pantalla homw
                         popUpTo("iniciar session") { inclusive = true } //Elimina de la pila todas las pantallas hasta iniciar session
-                        //e inclusive = true elimina también la pantalla iniciar sesion de la pila
+                         //e inclusive = true elimina también la pantalla iniciar sesion de la pila
                         launchSingleTop = true // evita que se creen instancias duplicadas de una misma pantalla
                     }
                 },
