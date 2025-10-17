@@ -62,6 +62,9 @@ dependencies {
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.core.ktx)
 
+    // DataStore (Preferences)
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
     // Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

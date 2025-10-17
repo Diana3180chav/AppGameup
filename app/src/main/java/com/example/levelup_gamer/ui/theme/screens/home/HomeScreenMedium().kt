@@ -1,4 +1,4 @@
-package com.example.levelup_gamer.ui.theme.screens
+package com.example.levelup_gamer.ui.theme.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +26,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.BottomSheetScaffoldState
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -36,13 +33,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
 import com.example.levelup_gamer.ui.theme.screens.ModalDrawer.MyModalDrawer
-import com.example.levelup_gamer.ui.theme.screens.register.RegisterScreen
 import kotlinx.coroutines.launch
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenExpanded(onNavigateToRegister: () -> Unit,
-                       onNavigateToLogin: () -> Unit) {//con esta función establecemos las principales características del contenedor y del diseño
+fun HomeScreenMedium(onNavigateToRegister: () -> Unit,
+                     onNavigateToLogin: () -> Unit ) {//con esta función establecemos las principales características del contenedor y del diseño
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) //acá creamos el estado del menú inicialmente
 
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
@@ -156,3 +152,5 @@ fun HomeScreenExpanded(onNavigateToRegister: () -> Unit,
         }
     }
 }
+
+//La versión tablet no está al 100% lista
