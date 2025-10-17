@@ -1,8 +1,5 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/levelup_gamer/ui/theme/screens/home/HomeScreenMedium().kt
+
 package com.example.levelup_gamer.ui.theme.screens.home
-========
-package com.example.levelup_gamer.ui.theme.screens.homeScreen
->>>>>>>> develop_jsaravia:app/src/main/java/com/example/levelup_gamer/ui/theme/screens/homeScreen/HomeScreenMedium().kt
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

@@ -1,8 +1,5 @@
-<<<<<<<< HEAD:app/src/main/java/com/example/levelup_gamer/ui/theme/screens/home/HomeScreen.kt
+
 package com.example.levelup_gamer.ui.theme.screens.home
-========
-package com.example.levelup_gamer.ui.theme.screens.homeScreen
->>>>>>>> develop_jsaravia:app/src/main/java/com/example/levelup_gamer/ui/theme/screens/homeScreen/HomeScreen.kt
 
 import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
