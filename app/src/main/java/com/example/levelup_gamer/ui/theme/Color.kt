@@ -18,16 +18,10 @@ val neonBlueDim  = Color(0x9900E5FF) // Azul fluorescente con transparencia (bor
 val textOnDark   = Color(0xFFEFEFEF) // Texto claro sobre fondo negro
 val errorRed     = Color(0xFFFF5252) // Para estados de error (inputs)
 //Colores personalizados
-
 val fondoPrincipal = Color(0xFF000000)
 val acentoAzul = Color(0xFF1E90FF)
 val acentoVerde = Color(0xFF39FF14)
 val textoPrincipal = Color(0xFFFFFFFF)
 val textosecundario = Color(0xFFD3D3D3)
-
-// Colores Register
-val registerFondo = Color(0x7021063F)
-val registerTitle = Color(0xFF000000)
-val registerlabel = Color(0xFFD3D3D3)
 
 

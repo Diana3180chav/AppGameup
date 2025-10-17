@@ -1,4 +1,5 @@
-package com.example.levelup_gamer.ui.theme.screens.homeScreen
+
+package com.example.levelup_gamer.ui.theme.screens.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

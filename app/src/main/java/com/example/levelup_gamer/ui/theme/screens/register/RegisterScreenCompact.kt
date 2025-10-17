@@ -11,33 +11,38 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
-import com.example.levelup_gamer.ui.theme.*
-
-
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.levelup_gamer.R
+import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreenCompact(onNavigateToHome: () -> Unit,
-                          onNavigateToLogin: () -> Unit,
-                          viewModel: UsuarioViewModel) {
+fun RegisterScreenCompact(
+    onNavigateToHome: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    viewModel: UsuarioViewModel
+) {
     val estado by viewModel.estado.collectAsState()
     val context = LocalContext.current
-    val registrado by viewModel.registroExitoso.collectAsState() //collectAsState convierte el StateFlow en un State de Compose.
+    val registrado by viewModel.registroExitoso.collectAsState()
+    var showPassword by remember { mutableStateOf(false) } // Estado para mostrar/ocultar contraseña
 
-    Scaffold(containerColor = registerFondo, topBar = {
-        TopAppBar(
-            title = {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    IconButton(
-                        onClick = { onNavigateToHome() },
-                        modifier = Modifier.padding(start = 8.dp)
-                    ){
+    Scaffold(
+        containerColor = loginBg, // Usa el color de fondo del login (negro puro)
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = loginBg, // Usa el color de fondo del login
+                    titleContentColor = neonBlue // Usa el color neón para el título
+                ),
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
                             painter = painterResource(id = R.mipmap.logo),
                             contentDescription = "Logo App Level-Up Gamer",
@@ -46,14 +51,16 @@ fun RegisterScreenCompact(onNavigateToHome: () -> Unit,
                                 .padding(end = 8.dp),
                             contentScale = ContentScale.Fit
                         )
+                        Text(
+                            "App Level-Up Store",
+                            color = neonBlue,
+                            style = MaterialTheme.typography.titleLarge
+                        )
                     }
                 }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = fondoPrincipal
             )
-        )
-    }) { innerPadding ->
+        }
+    ) { innerPadding ->
 
         Column(
             modifier = Modifier
@@ -72,115 +79,152 @@ fun RegisterScreenCompact(onNavigateToHome: () -> Unit,
                     .padding(bottom = 24.dp),
                 contentScale = ContentScale.Fit
             )
-            //Un Spacer para empujar el formulario mas abajo.
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                //campo rut
+
+                // --- Campo Rut ---
                 OutlinedTextField(
                     value = estado.rut,
-                    onValueChange = viewModel:: onRutChange,
+                    onValueChange = viewModel::onRutChange,
                     label = { Text("Rut") },
+                    singleLine = true,
                     isError = estado.errores.rut != null,
                     supportingText = {
-                        estado.errores.rut?.let{
-                           Text(it, color = MaterialTheme.colorScheme.error)
+                        estado.errores.rut?.let {
+                            Text(
+                                it,
+                                color = errorRed
+                            )
                         }
-                    },
+                    }, // Usa errorRed
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), // Usar Text o Number (solo si quieres numeros)
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = registerlabel,
-                        unfocusedTextColor = registerlabel,
-                        cursorColor = registerlabel,
-                        focusedLabelColor = registerlabel,
-                        unfocusedLabelColor = registerlabel
-
-                    )
+                    colors = outlinedTextFieldColors() // Usa la función de colores
                 )
-                //campo del nombre del usuario
+
+                // --- Campo Nombre de usuario ---
                 OutlinedTextField(
                     value = estado.userNam,
-                    onValueChange = viewModel:: onNombreChange,
+                    onValueChange = viewModel::onNombreChange,
                     label = { Text("Nombre de usuario") },
+                    singleLine = true,
                     isError = estado.errores.userNam != null,
                     supportingText = {
-                        estado.errores.userNam?.let{
-                            Text(it, color = MaterialTheme.colorScheme.error)
+                        estado.errores.userNam?.let {
+                            Text(
+                                it,
+                                color = errorRed
+                            )
                         }
-                    },
+                    }, // Usa errorRed
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = registerlabel,
-                        unfocusedTextColor = registerlabel,
-                        cursorColor = registerlabel,
-                        focusedLabelColor = registerlabel,
-                        unfocusedLabelColor = registerlabel
-
-                    )
+                    colors = outlinedTextFieldColors() // Usa la función de colores
                 )
-                //campo del correo
+
+                // --- Campo Correo electrónico ---
                 OutlinedTextField(
                     value = estado.email,
-                    onValueChange = viewModel:: onEmailChange,
+                    onValueChange = viewModel::onEmailChange,
                     label = { Text("Correo electrónico") },
+                    singleLine = true,
                     isError = estado.errores.email != null,
                     supportingText = {
-                        estado.errores.email?.let{
-                            Text(it, color = MaterialTheme.colorScheme.error)
+                        estado.errores.email?.let {
+                            Text(
+                                it,
+                                color = errorRed
+                            )
                         }
-                    },
+                    }, // Usa errorRed
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = registerlabel,
-                        unfocusedTextColor = registerlabel,
-                        cursorColor = registerlabel,
-                        focusedLabelColor = registerlabel,
-                        unfocusedLabelColor = registerlabel
-
-                    )
+                    colors = outlinedTextFieldColors() // Usa la función de colores
                 )
-                //campo del correo
+
+                // --- Campo Contraseña ---
                 OutlinedTextField(
                     value = estado.password,
-                    onValueChange = viewModel:: onPasswordChange,
+                    onValueChange = viewModel::onPasswordChange,
                     label = { Text("Contraseña") },
+                    singleLine = true,
+                    visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    trailingIcon = { // Icono para mostrar/ocultar contraseña
+                        TextButton(onClick = { showPassword = !showPassword }) {
+                            Text(if (showPassword) "Ocultar" else "Ver", color = neonBlue)
+                        }
+                    },
                     isError = estado.errores.password != null,
                     supportingText = {
-                        estado.errores.password?.let{
-                            Text(it, color = MaterialTheme.colorScheme.error)
+                        estado.errores.password?.let {
+                            Text(
+                                it,
+                                color = errorRed
+                            )
+                        }
+                    }, // Usa errorRed
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = outlinedTextFieldColors() // Usa la función de colores
+                )
+
+                // --- Botón de Registro ---
+                Button(
+                    onClick = {
+                        if (viewModel.validarFormulario()) {
+                            Toast.makeText(
+                                context,
+                                "Registro exitoso. Rut: ${estado.rut} - Usuario: ${estado.userNam}. Serás redirigido para iniciar sesión",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            viewModel.limpiarCampos()
+                            viewModel.registrarUsuario()
+                            onNavigateToLogin()
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = OutlinedTextFieldDefaults.colors( //acá le damos ciertas propiedades de color
-                        focusedTextColor = registerlabel,
-                        unfocusedTextColor = registerlabel,
-                        cursorColor = registerlabel,
-                        focusedLabelColor = registerlabel,
-                        unfocusedLabelColor = registerlabel
+                    colors = ButtonDefaults.buttonColors( // Estilo del botón del login
+                        containerColor = neonBlue,
+                        contentColor = Color.Black
                     )
-                )
-                //botón
-                Button(
-                    onClick = {
-                        if(viewModel.validarFormulario()){ // validamos que cumpla todas las condiciones
-                            Toast.makeText(context, "Registro exitoso. Rut: ${estado.rut} - Usuario: ${estado.userNam}. Serás redirigido para iniciar sesión", Toast.LENGTH_LONG).show() // acá creamos un mensaje cuando se registra
-                            viewModel.limpiarCampos() //limpiamos los campos
-                            viewModel.registrarUsuario() //llamamos la función que ayuda a validar el registro del usuario vía consola
-                            onNavigateToLogin() //después enviamos el usuario al login para que inicie sesión
-                        }
-                    }, modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Registrarse")
                 }
 
-                if(registrado){
-                    viewModel.limpiarRegistroExitoso() //llama la función que limpia el formulario de registro
+                if (registrado) {
+                    viewModel.limpiarRegistroExitoso()
+                }
+
+                // --- Botón para ir al Login ---
+                TextButton(
+                    onClick = onNavigateToLogin,
+                    modifier = Modifier.align(Alignment.End),
+                    colors = ButtonDefaults.textButtonColors(contentColor = neonBlue) // Usa el color neón
+                ) {
+                    Text("¿Ya tienes cuenta? Inicia sesión")
                 }
             }
         }
     }
 }
+
+// Función auxiliar para tener los colores de OutlinedTextField del Login en un solo lugar
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun outlinedTextFieldColors() = OutlinedTextFieldDefaults.colors(
+    focusedTextColor = textOnDark,
+    unfocusedTextColor = textOnDark,
+    cursorColor = neonBlue,
+    focusedLabelColor = neonBlue,
+    unfocusedLabelColor = textOnDark.copy(alpha = 0.7f),
+    focusedBorderColor = neonBlue,
+    unfocusedBorderColor = neonBlueDim,
+    errorBorderColor = errorRed,
+    focusedContainerColor = loginBg,
+    unfocusedContainerColor = loginBg
+)
