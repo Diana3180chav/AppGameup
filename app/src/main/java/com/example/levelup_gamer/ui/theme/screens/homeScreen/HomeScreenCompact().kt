@@ -1,4 +1,4 @@
-package com.example.levelup_gamer.ui.theme.screens
+package com.example.levelup_gamer.ui.theme.screens.homeScreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -26,23 +26,22 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.BottomSheetScaffoldState
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
+import com.example.levelup_gamer.ui.theme.homeBg
+import com.example.levelup_gamer.ui.theme.loginBg
+import com.example.levelup_gamer.ui.theme.neonBlueDim
 import com.example.levelup_gamer.ui.theme.screens.ModalDrawer.MyModalDrawer
-import com.example.levelup_gamer.ui.theme.screens.register.RegisterScreen
 import kotlinx.coroutines.launch
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenMedium(onNavigateToRegister: () -> Unit,
-                     onNavigateToLogin: () -> Unit ) {//con esta función establecemos las principales características del contenedor y del diseño
+fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
+                      onNavigateToLogin: () -> Unit ) {//con esta función establecemos las principales características del contenedor y del diseño
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) //acá creamos el estado del menú inicialmente
 
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
@@ -83,7 +82,7 @@ fun HomeScreenMedium(onNavigateToRegister: () -> Unit,
                 Text(text = "Registro", style = MaterialTheme.typography.titleMedium)
             }
             HorizontalDivider()
-            IconButton(// se agrega un icono de una X para cerrar el menú
+            IconButton( // se agrega un icono de una X para cerrar el menú
                 onClick = {
                     scope.launch {
                         drawerState.close()
@@ -96,11 +95,13 @@ fun HomeScreenMedium(onNavigateToRegister: () -> Unit,
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }
+
         }
     }
 
     MyModalDrawer(drawerState = drawerState, drawerContent = drawerContent){ //acá estámos pasando el estado de drawerState
         Scaffold( //es el contenedor principal que organiza las zonas típicas de una pantalla
+            containerColor = homeBg,
             topBar = { // es similar al header
                 TopAppBar(
                     title = {
@@ -143,18 +144,106 @@ fun HomeScreenMedium(onNavigateToRegister: () -> Unit,
                     .padding(innerPadding) //deja espacio debajo del AppBar
                     .fillMaxSize()
                     .padding(16.dp),// margen alrededor del contenido
-                verticalArrangement = Arrangement.spacedBy(20.dp) // espacio entre cada elemento
+                verticalArrangement = Arrangement.spacedBy(20.dp), // espacio entre cada elemento
+                horizontalAlignment = Alignment.CenterHorizontally //centramos la imagen
             ){
-                Text( // acá establecemos un texto estándar y llámamos características de color y style que ya están definidas
-                    text = "Contenido principal",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.titleLarge
+                Image( //imagen del posible carousel
+                    painter = painterResource(id = R.mipmap.carousel),
+                    contentDescription = "Logo App Level UP Gamer",
                 )
+                //Listado de productos
 
+                Column( // a cada producto en coliumna
+                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally //centramos el contenido
 
+                    ){
+                    //producto 1
+
+                    Image(
+                        painter = painterResource(id = R.mipmap.producto1),
+                        contentDescription = "Logo App Level UP Gamer",
+                        modifier = Modifier
+                            .height(80.dp) // tamaño reducido para caber en el AppBar
+                    )
+                    Text(
+                        text = "Play Station 5" +
+                                "\n $ 599.990",
+                        style = MaterialTheme.typography.titleSmall, //estilos al texto
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
+                            containerColor = MaterialTheme.colorScheme.onPrimary,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+
+                        ),
+                        modifier = Modifier.padding(8.dp)
+                    ){
+                        Text("Agregar al carrito")
+                    }
+
+                    HorizontalDivider()
+
+                    //producto 2
+
+                    Image(
+                        painter = painterResource(id = R.mipmap.producto2),
+                        contentDescription = "Logo App Level UP Gamer",
+                        modifier = Modifier
+                            .height(80.dp) // tamaño reducido para caber en el AppBar
+                    )
+                    Text(
+                        text = "Silla gamer" +
+                                "\n $ 79.990",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
+                            containerColor = MaterialTheme.colorScheme.onPrimary,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+
+                        ),
+                        modifier = Modifier.padding(8.dp)
+                    ){
+                        Text("Agregar al carrito")
+                    }
+
+                    HorizontalDivider()
+
+                    //producto 3
+
+                    Image(
+                        painter = painterResource(id = R.mipmap.producto3),
+                        contentDescription = "Logo App Level UP Gamer",
+                        modifier = Modifier
+                            .height(80.dp) // tamaño reducido para caber en el AppBar
+                    )
+                    Text(
+                        text = "PC Gamer" +
+                                "\n $ 899.990",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                    Button(
+                        onClick = { /*TODO*/ },
+                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
+                            containerColor = MaterialTheme.colorScheme.onPrimary,
+                            contentColor = MaterialTheme.colorScheme.onSurface
+
+                        ),
+                        modifier = Modifier.padding(8.dp)
+                    ){
+                        Text("Agregar al carrito")
+                    }
+                }
             }
         }
     }
 }
 
-//La versión tablet no está al 100% lista
+//La versión móvil no está al 100% lista

@@ -1,4 +1,4 @@
-package com.example.levelup_gamer.ui.theme.screens
+package com.example.levelup_gamer.ui.theme.screens.homeScreen
 
 import android.util.Log
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
