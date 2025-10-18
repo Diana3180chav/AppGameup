@@ -20,6 +20,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import com.example.levelup_gamer.R
 import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,6 +36,8 @@ fun RegisterScreenCompact(
     val context = LocalContext.current
     val registrado by viewModel.registroExitoso.collectAsState()
     var showPassword by remember { mutableStateOf(false) } // Estado para mostrar/ocultar contraseña
+    var cargando by remember { mutableStateOf(false) } // Estado para mostrar/ocultar el cargando
+
 
     Scaffold(
         containerColor = loginBg, // Usa el color de fondo del login (negro puro)
@@ -176,24 +182,45 @@ fun RegisterScreenCompact(
                 // --- Botón de Registro ---
                 Button(
                     onClick = {
-                        if (viewModel.validarFormulario()) {
-                            Toast.makeText(
-                                context,
-                                "Registro exitoso. Rut: ${estado.rut} - Usuario: ${estado.userNam}. Serás redirigido para iniciar sesión",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            viewModel.limpiarCampos()
-                            viewModel.registrarUsuario()
-                            onNavigateToLogin()
+
+                        CoroutineScope(Dispatchers.Main).launch{
+                            cargando = true
+
+
+                            if (viewModel.validarFormulario()) {
+                                Toast.makeText(
+                                    context,
+                                    "Registro exitoso",
+                                    Toast.LENGTH_LONG
+                                ).show()
+
+                                delay(2000)
+                                cargando = false
+                                viewModel.limpiarCampos()
+                                viewModel.registrarUsuario()
+                                onNavigateToLogin()
+                            } else {
+                                cargando = false
+                            }
                         }
                     },
+                    enabled = !cargando, // Deshabilita el botón si está cargando
                     modifier = Modifier.fillMaxWidth(),
                     colors = ButtonDefaults.buttonColors( // Estilo del botón del login
                         containerColor = neonBlue,
                         contentColor = Color.Black
                     )
                 ) {
-                    Text("Registrarse")
+                    if(cargando){
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(24.dp),
+                            strokeWidth = 2.dp,
+                            color = Color.White // Usa el color de fondo del botón
+                        )
+                    } else {
+                        Text("Registrarse")
+                    }
+
                 }
 
                 if (registrado) {
