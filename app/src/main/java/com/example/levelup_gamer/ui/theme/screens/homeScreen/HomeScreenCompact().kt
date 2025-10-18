@@ -2,6 +2,7 @@
 package com.example.levelup_gamer.ui.theme.screens.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,11 +49,16 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
 
     val drawerContent: @Composable () -> Unit = {
-        Column( // trabajamo el menú en columna
-            modifier = Modifier.padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+        Column( // trabajamos el menú en columna
+            modifier = Modifier
+                .fillMaxSize()
+                .background(loginBg)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+
+
         ) {
-            Text("Menú", style = MaterialTheme.typography.titleLarge) //le damos unos estilos
+            Text("Menú", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onPrimary) //le damos unos estilos
             HorizontalDivider() //nos da una sepación entre elementos con una línea
 
             Button(onClick = {
@@ -93,7 +99,7 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                 Icon(
                     Icons.Filled.Close, // llamamos un icono de menú y le damos estilos
                     contentDescription = "Cerrar menú",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
