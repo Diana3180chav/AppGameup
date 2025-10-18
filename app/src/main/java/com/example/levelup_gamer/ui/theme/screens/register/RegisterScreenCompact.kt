@@ -188,13 +188,16 @@ fun RegisterScreenCompact(
 
 
                             if (viewModel.validarFormulario()) {
-                                Toast.makeText(
+                                val toast = Toast.makeText(
                                     context,
                                     "Registro exitoso",
                                     Toast.LENGTH_LONG
-                                ).show()
+                                )
 
-                                delay(2000)
+                                toast.show()
+
+                                delay(1000)
+                                toast.cancel()
                                 cargando = false
                                 viewModel.limpiarCampos()
                                 viewModel.registrarUsuario()
