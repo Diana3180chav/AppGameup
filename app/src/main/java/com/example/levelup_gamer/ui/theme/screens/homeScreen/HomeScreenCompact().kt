@@ -1,8 +1,10 @@
 
 package com.example.levelup_gamer.ui.theme.screens.home
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,20 +27,31 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.ui.Alignment
 import com.example.levelup_gamer.ui.theme.fondoPrincipal
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.levelup_gamer.ui.theme.homeBg
 import com.example.levelup_gamer.ui.theme.loginBg
 import com.example.levelup_gamer.ui.theme.neonBlueDim
 import com.example.levelup_gamer.ui.theme.screens.ModalDrawer.MyModalDrawer
+import com.example.levelup_gamer.viewmodel.ProductoViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
@@ -47,6 +60,10 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) //acá creamos el estado del menú inicialmente
 
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
+
+    val productoViewModel: ProductoViewModel = viewModel()
+
+    val context = LocalContext.current
 
     val drawerContent: @Composable () -> Unit = {
         Column( // trabajamos el menú en columna
@@ -87,6 +104,25 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                 modifier = Modifier.padding(12.dp) // indicamos cuanto espacio tendrá el botón
             ) {
                 Text(text = "Registro", style = MaterialTheme.typography.titleMedium)
+            }
+            HorizontalDivider()
+            Button(onClick = {
+                onNavigateToRegister() // cuando se haga click en el botón, se redireccionará el usuario a Register
+                scope.launch{drawerState.close()}
+            },
+                colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
+                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                    contentColor = MaterialTheme.colorScheme.onSurface
+
+                ),
+                modifier = Modifier.padding(12.dp) // indicamos cuanto espacio tendrá el botón
+            ) {
+                Icon(
+                    Icons.Filled.ShoppingCart, // llamamos un icono de carrito y le damos estilos
+                    contentDescription = "Carrito",
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+                Text(text = "Carro", style = MaterialTheme.typography.titleMedium)
             }
             HorizontalDivider()
             IconButton( // se agrega un icono de una X para cerrar el menú
@@ -138,7 +174,34 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                                 contentScale = ContentScale.Fit
                             )
 
+
+
                         }
+                        Row( //Acá creamos una nueva fila para agregar el carro y alinearlo a la derecha
+
+                            modifier = Modifier
+                                .fillMaxWidth() // hace que ocupe todo el ancho disponible
+                                .padding(12.dp),
+                            horizontalArrangement = Arrangement.End // coloca el contenido a la derecha
+                        ) {
+                            Button(
+                                onClick = {
+                                    //Acá podemos poner un redireccionamiento a la interfaz del carro de compras
+                                },
+                                colors = ButtonDefaults.buttonColors( //estilos
+                                    containerColor = MaterialTheme.colorScheme.onPrimary,
+                                    contentColor = MaterialTheme.colorScheme.onSurface
+                                )
+                            ) {
+                                Icon(
+                                    Icons.Filled.ShoppingCart, // llamamos un icono de carrito y le damos estilos
+                                    contentDescription = "Carrito",
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text("Carro")
+                            }
+                        }
+
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = fondoPrincipal
@@ -181,13 +244,23 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            val producto = com.example.levelup_gamer.model.Producto(1, "Play Station 5", 599.990)
+                            productoViewModel.agregarAlCarrito(producto)
+
+
+                            Toast.makeText(context, "Producto agregado al carrito ${producto.idProducto} ${producto.nombre}", Toast.LENGTH_SHORT).show()
+                        },
                         colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
-                            containerColor = MaterialTheme.colorScheme.onPrimary,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            containerColor = MaterialTheme.colorScheme.onSurface,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                            //colores en el borde
+
 
                         ),
                         modifier = Modifier.padding(8.dp)
+                            .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp))
+
                     ){
                         Text("Agregar al carrito")
                     }
@@ -207,13 +280,19 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            val producto = com.example.levelup_gamer.model.Producto(2, "Silla gamer", 79.990)
+                            productoViewModel.agregarAlCarrito(producto)
+
+                            Toast.makeText(context, "Producto agregado al carrito ${producto.idProducto} ${producto.nombre}", Toast.LENGTH_SHORT).show()
+                        },
                         colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
-                            containerColor = MaterialTheme.colorScheme.onPrimary,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            containerColor = MaterialTheme.colorScheme.onSurface,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
 
                         ),
                         modifier = Modifier.padding(8.dp)
+                            .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp))
                     ){
                         Text("Agregar al carrito")
                     }
@@ -233,13 +312,20 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                         color = MaterialTheme.colorScheme.onPrimary
                     )
                     Button(
-                        onClick = { /*TODO*/ },
+                        onClick = {
+                            val producto = com.example.levelup_gamer.model.Producto(3, "PC Gamer", 899.990)
+                            productoViewModel.agregarAlCarrito(producto)
+
+                            Toast.makeText(context, "Producto agregado al carrito ${producto.idProducto} ${producto.nombre}", Toast.LENGTH_SHORT).show()
+                        },
                         colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
-                            containerColor = MaterialTheme.colorScheme.onPrimary,
-                            contentColor = MaterialTheme.colorScheme.onSurface
+                            containerColor = MaterialTheme.colorScheme.onSurface,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
 
                         ),
                         modifier = Modifier.padding(8.dp)
+                            .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp))
+
                     ){
                         Text("Agregar al carrito")
                     }
