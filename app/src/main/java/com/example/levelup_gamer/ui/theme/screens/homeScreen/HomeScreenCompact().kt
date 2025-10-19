@@ -249,7 +249,7 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                             productoViewModel.agregarAlCarrito(producto)
 
 
-                            Toast.makeText(context, "Producto agregado al carrito ${producto.idProducto} ${producto.nombre}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
                         },
                         colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
                             containerColor = MaterialTheme.colorScheme.onSurface,
@@ -284,7 +284,7 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                             val producto = com.example.levelup_gamer.model.Producto(2, "Silla gamer", 79.990)
                             productoViewModel.agregarAlCarrito(producto)
 
-                            Toast.makeText(context, "Producto agregado al carrito ${producto.idProducto} ${producto.nombre}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
                         },
                         colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
                             containerColor = MaterialTheme.colorScheme.onSurface,
@@ -316,7 +316,7 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                             val producto = com.example.levelup_gamer.model.Producto(3, "PC Gamer", 899.990)
                             productoViewModel.agregarAlCarrito(producto)
 
-                            Toast.makeText(context, "Producto agregado al carrito ${producto.idProducto} ${producto.nombre}", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
                         },
                         colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
                             containerColor = MaterialTheme.colorScheme.onSurface,
