@@ -192,8 +192,6 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                         Text("Agregar al carrito")
                     }
 
-                    HorizontalDivider()
-
                     //producto 2
 
                     Image(
@@ -219,8 +217,6 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                     ){
                         Text("Agregar al carrito")
                     }
-
-                    HorizontalDivider()
 
                     //producto 3
 
