@@ -43,6 +43,9 @@ fun AppNavigation(){
                 },
                 onNavigateToRegister = {
                     navController.navigate("register")
+                },
+                onNavigateToHome = {
+                    navController.navigate("home")
                 }
             )
         }

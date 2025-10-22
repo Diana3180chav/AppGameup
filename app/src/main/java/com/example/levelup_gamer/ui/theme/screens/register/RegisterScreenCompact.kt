@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.graphics.Color
@@ -54,7 +55,8 @@ fun RegisterScreenCompact(
                             contentDescription = "Logo App Level-Up Gamer",
                             modifier = Modifier
                                 .height(40.dp)
-                                .padding(end = 8.dp),
+                                .padding(end = 8.dp)
+                                .clickable{onNavigateToHome()},
                             contentScale = ContentScale.Fit
                         )
                         Text(

@@ -2,6 +2,7 @@ package com.example.levelup_gamer.ui.theme.screens.login
 
 import androidx.compose.runtime.*
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -24,7 +25,8 @@ import androidx.compose.ui.graphics.Color
 @Composable
 fun LoginScreenExpanded(
     onLoginSuccess: () -> Unit = {},
-    onNavigateToRegister: () -> Unit = {}
+    onNavigateToRegister: () -> Unit = {},
+    onNavigateToHome: () -> Unit = {}
 ) {
 
     var email by remember { mutableStateOf("") }
@@ -47,7 +49,8 @@ fun LoginScreenExpanded(
                             contentDescription = "Logo App Level-Up Gamer",
                             modifier = Modifier
                                 .height(40.dp)
-                                .padding(end = 8.dp),
+                                .padding(end = 8.dp)
+                                .clickable{onNavigateToHome()},
                             contentScale = ContentScale.Fit
                         )
                         Text(

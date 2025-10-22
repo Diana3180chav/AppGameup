@@ -14,7 +14,7 @@ fun RegisterScreen(onNavigateToHome: () -> Unit,
     Log.d("RegisterScreen", "WidthSizeClass: ${windowSizeClass.widthSizeClass}")
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> RegisterScreenCompact(onNavigateToHome, onNavigateToLogin, viewModel)
-        WindowWidthSizeClass.Medium -> RegisterScreenMedium(onNavigateToHome)
-        WindowWidthSizeClass.Expanded -> RegisterScreenExpanded(onNavigateToHome)
+        WindowWidthSizeClass.Medium -> RegisterScreenMedium(onNavigateToHome, onNavigateToLogin, viewModel)
+        WindowWidthSizeClass.Expanded -> RegisterScreenExpanded(onNavigateToHome, onNavigateToLogin, viewModel)
     }
 }

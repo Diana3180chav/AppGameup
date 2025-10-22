@@ -9,13 +9,14 @@ import com.example.levelup_gamer.ui.theme.utils.obtenerWindowSizeClass
 @Composable
 fun LoginScreen(
     onLoginSuccess: () -> Unit = {},
-    onNavigateToRegister: () -> Unit = {}
+    onNavigateToRegister: () -> Unit = {},
+    onNavigateToHome: () -> Unit = {}
 ) {
     val windowSizeClass = obtenerWindowSizeClass()
     Log.d("LoginScreen", "WidthSizeClass: ${windowSizeClass.widthSizeClass}")
     when (windowSizeClass.widthSizeClass) {
-        WindowWidthSizeClass.Compact -> LoginScreenCompact(onLoginSuccess, onNavigateToRegister = onNavigateToRegister)
-        WindowWidthSizeClass.Medium  -> LoginScreenMedium(onLoginSuccess, onNavigateToRegister = onNavigateToRegister)
-        WindowWidthSizeClass.Expanded -> LoginScreenExpanded(onLoginSuccess, onNavigateToRegister = onNavigateToRegister)
+        WindowWidthSizeClass.Compact -> LoginScreenCompact(onLoginSuccess, onNavigateToRegister = onNavigateToRegister, onNavigateToHome = onNavigateToHome)
+        WindowWidthSizeClass.Medium  -> LoginScreenMedium(onLoginSuccess, onNavigateToRegister = onNavigateToRegister, onNavigateToHome = onNavigateToHome)
+        WindowWidthSizeClass.Expanded -> LoginScreenExpanded(onLoginSuccess, onNavigateToRegister = onNavigateToRegister, onNavigateToHome = onNavigateToHome)
     }
 }

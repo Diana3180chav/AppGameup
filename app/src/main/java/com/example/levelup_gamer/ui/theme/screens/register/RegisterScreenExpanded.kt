@@ -10,10 +10,15 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreenExpanded(onNavigateToHome: () -> Unit) {
+fun RegisterScreenExpanded(
+    onNavigateToHome: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    viewModel: UsuarioViewModel
+) {
     var username by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
