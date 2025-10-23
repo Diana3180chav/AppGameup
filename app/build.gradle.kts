@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.core.ktx)
+    implementation("androidx.compose.material:material-icons-extended")
 
     // DataStore (Preferences)
     implementation("androidx.datastore:datastore-preferences:1.1.1")
