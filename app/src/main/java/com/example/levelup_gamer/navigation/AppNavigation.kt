@@ -13,6 +13,7 @@ import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
 // 2. IMPORTAR LA NUEVA PANTALLA DE CARRITO (que crearemos en el paso 3)
 import com.example.levelup_gamer.ui.theme.screens.carrito.CarritoScreen
+import com.example.levelup_gamer.viewmodel.LoginViewModel
 
 
 @Composable
@@ -43,22 +44,23 @@ fun AppNavigation(){
 
         // 🔑redirección al login
         composable("iniciar session") {
+            val LoginViewModel: LoginViewModel = viewModel()   // instancia del V
             LoginScreen(
+                viewModel = LoginViewModel,
                 onLoginSuccess = {
                     navController.navigate("home") { // env´ía al usuario a la pantalla homw
                         popUpTo("iniciar session") { inclusive = true } //Elimina de la pila todas las pantallas hasta iniciar session
-                         //e inclusive = true elimina también la pantalla iniciar sesion de la pila
+                        //e inclusive = true elimina también la pantalla iniciar sesion de la pila
                         launchSingleTop = true // evita que se creen instancias duplicadas de una misma pantalla
                     }
                 },
-                onNavigateToRegister = {
-                    navController.navigate("register")
+                onNavigateToRegister = { navController.navigate("register")
                 },
-                onNavigateToHome = {
-                    navController.navigate("home")
+                onNavigateToHome = { navController.navigate("home")
                 }
             )
         }
+
 
         // redirección a registro
         composable("register") {
