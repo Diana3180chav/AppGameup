@@ -20,6 +20,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import com.example.levelup_gamer.R
 import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
+import com.example.levelup_gamer.ui.theme.screens.register.Camera.CameraPreview
+import com.example.levelup_gamer.viewmodel.RegisterViewModel
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,14 +33,16 @@ import kotlinx.coroutines.launch
 fun RegisterScreenCompact(
     onNavigateToHome: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    viewModel: UsuarioViewModel
+    viewModel: UsuarioViewModel,
+    registerViewModel: RegisterViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
     val context = LocalContext.current
     val registrado by viewModel.registroExitoso.collectAsState()
     var showPassword by remember { mutableStateOf(false) } // Estado para mostrar/ocultar contraseña
     var cargando by remember { mutableStateOf(false) } // Estado para mostrar/ocultar el cargando
-
+    val cameraActiva by registerViewModel.siCamaraActiva.collectAsState()
+    val fotoUri by registerViewModel.fotoUri.collectAsState()
 
     Scaffold(
         containerColor = loginBg, // Usa el color de fondo del login (negro puro)
@@ -88,6 +92,16 @@ fun RegisterScreenCompact(
                 contentScale = ContentScale.Fit
             )
             Spacer(modifier = Modifier.height(24.dp))
+
+            if (cameraActiva) {
+                CameraPreview(
+                    onTomarFoto = { uri -> registerViewModel.onTomarFoto(uri) }
+                )
+            }
+
+            fotoUri?.let {
+                Text("Foto capturada: $it")
+            }
 
             Column(
                 modifier = Modifier.fillMaxWidth(),

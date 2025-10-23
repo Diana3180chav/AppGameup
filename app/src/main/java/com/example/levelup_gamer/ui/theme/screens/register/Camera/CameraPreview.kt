@@ -1,8 +1,11 @@
 package com.example.levelup_gamer.ui.theme.screens.register.Camera
 
+import android.net.Uri
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.CameraSelector
+import androidx.camera.core.ImageCapture
+import androidx.camera.core.ImageCaptureException
 import androidx.camera.lifecycle.ProcessCameraProvider
 import com.example.levelup_gamer.R
 import androidx.camera.view.PreviewView // Vista que renderiza la imagen de la cámara
@@ -21,14 +24,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.camera.core.Preview
-
+import androidx.core.content.ContextCompat
+import java.io.File
 
 
 @Composable
 fun CameraPreview(
     modifier: Modifier = Modifier,
-    onTomarFoto: () -> Unit,
-    onIniciarPararVideo: () -> Unit
+    onTomarFoto: (Uri) -> Unit,
 ){
     //contexto actual (para acceder a recursos y actividades)
     val  context = LocalContext.current
@@ -36,6 +39,9 @@ fun CameraPreview(
     val lifecycleOwner = LocalLifecycleOwner.current
     //Obtiene el proveedor de la cámara (asíncrono)
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+
+    //Instancia recordada de ImageCapture (permite tomar fotos)
+    val imageCapture = remember { ImageCapture.Builder().build() }
 
     //Crea una vista de cámara nativa de Android dentro de Compose
     AndroidView(
@@ -47,14 +53,7 @@ fun CameraPreview(
             .fillMaxWidth()
             .height(300.dp) // Altura del visor
     )
-    // Fila con los botones de control
-    Row(
-        horizontalArrangement = Arrangement.SpaceEvenly,
-        modifier = Modifier.fillMaxWidth()
-    ){
-        Button(onClick = onTomarFoto) {Text("Tomar foto")}
-        Button(onClick = onIniciarPararVideo) {Text("Iniciar/Parar video")}
-    }
+
 
     // Se ejecuta una vez cuando cameraProviderFuture cambia
     LaunchedEffect(cameraProviderFuture) {
@@ -74,12 +73,38 @@ fun CameraPreview(
             //Desvincula cualquier uso anterior de la cámara
             cameraProvider.unbindAll()
             // Vincula la cámara al ciclo de vida de la pantalla actual
-            cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview)
+            cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview, imageCapture)
         } catch (exc: Exception){
             //Lanza una excepción encaso de que ocurriese algún fallo
             Log.e("Camara", "El uso de case binding falló", exc)
         }
 
+    }
+
+    // Fila con los botones de control
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        modifier = Modifier.fillMaxWidth()
+    ){
+        Button(onClick = {
+            val fotoArchivo = File(context.cacheDir,"${System.currentTimeMillis()}.jpg")
+            val output = ImageCapture.OutputFileOptions.Builder(fotoArchivo).build()
+            imageCapture.takePicture(
+                output,
+                ContextCompat.getMainExecutor(context),
+                object : ImageCapture.OnImageSavedCallback{
+                    override fun onError(exc: ImageCaptureException){
+                        Log.e("CamaraX", "Error al capturar la foto : ${exc.message}", exc)
+                    }
+
+                    override fun onImageSaved(output: ImageCapture.OutputFileResults){
+                        val uri = Uri.fromFile(fotoArchivo)
+                        onTomarFoto(uri)
+                    }
+                }
+            )
+        })
+        {Text("Tomar Foto")}
     }
 
 }
