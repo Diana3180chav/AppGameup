@@ -30,19 +30,24 @@ fun CameraPreview(
     onTomarFoto: () -> Unit,
     onIniciarPararVideo: () -> Unit
 ){
+    //contexto actual (para acceder a recursos y actividades)
     val  context = LocalContext.current
+    //LifecycleOwner actual (para vincular la cámara al ciclo de vida)
     val lifecycleOwner = LocalLifecycleOwner.current
+    //Obtiene el proveedor de la cámara (asíncrono)
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
+    //Crea una vista de cámara nativa de Android dentro de Compose
     AndroidView(
+        // Crea un PreviewView (vista de cámara)
         factory = { ctx ->
-            PreviewView(ctx).apply { id = R.id.viewFinder }
+            PreviewView(ctx).apply { id = R.id.viewFinder } // Asigna un ID para poder encontrarlo luego
         },
         modifier = modifier
             .fillMaxWidth()
-            .height(300.dp)
+            .height(300.dp) // Altura del visor
     )
-
+    // Fila con los botones de control
     Row(
         horizontalArrangement = Arrangement.SpaceEvenly,
         modifier = Modifier.fillMaxWidth()
@@ -51,19 +56,27 @@ fun CameraPreview(
         Button(onClick = onIniciarPararVideo) {Text("Iniciar/Parar video")}
     }
 
+    // Se ejecuta una vez cuando cameraProviderFuture cambia
     LaunchedEffect(cameraProviderFuture) {
+        //Espera a que el proveedor esté disponible
         val cameraProvider = cameraProviderFuture.get()
+        // Crea la vista previa de la cámara
         val preview = Preview.Builder().build()
+        // Selecciona la cámara trasera por defecto
         val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
 
+        //Asocia la vista previa con la superficie del PreviewView
         preview.setSurfaceProvider(
             (context as AppCompatActivity).findViewById<PreviewView>(R.id.viewFinder).surfaceProvider
         )
 
         try{
+            //Desvincula cualquier uso anterior de la cámara
             cameraProvider.unbindAll()
+            // Vincula la cámara al ciclo de vida de la pantalla actual
             cameraProvider.bindToLifecycle(lifecycleOwner, cameraSelector, preview)
         } catch (exc: Exception){
+            //Lanza una excepción encaso de que ocurriese algún fallo
             Log.e("Camara", "El uso de case binding falló", exc)
         }
 
