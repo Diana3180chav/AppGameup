@@ -1,3 +1,5 @@
+import org.gradle.kotlin.dsl.implementation
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -22,9 +24,16 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
     buildFeatures {
         compose = true
+        viewBinding = true
     }
+
 
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
@@ -79,4 +88,16 @@ dependencies {
 
     //DataStore para el uso sin una dependencia android
     implementation("androidx.datastore:datastore-preferences-core:1.1.7")
+
+    //Le damos las dependencias para trabajar con CamaraX
+    val cameraxVersion = "1.1.0-beta01"
+
+    implementation("androidx.camera:camera-core:$cameraxVersion")
+    implementation("androidx.camera:camera-camera2:$cameraxVersion")
+    implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("androidx.camera:camera-video:$cameraxVersion")
+
+    implementation("androidx.camera:camera-view:$cameraxVersion")
+    implementation("androidx.camera:camera-extensions:$cameraxVersion")
+
 }
