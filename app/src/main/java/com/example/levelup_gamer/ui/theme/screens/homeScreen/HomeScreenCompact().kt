@@ -1,4 +1,3 @@
-
 package com.example.levelup_gamer.ui.theme.screens.home
 
 import android.widget.Toast
@@ -39,15 +38,15 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+// import androidx.lifecycle.viewmodel.compose.viewModel // <- YA NO SE USA
 import com.example.levelup_gamer.ui.theme.homeBg
 import com.example.levelup_gamer.ui.theme.loginBg
-import com.example.levelup_gamer.ui.theme.neonBlueDim
+// import com.example.levelup_gamer.ui.theme.neonBlueDim // <- No se usaba en tu código
 import com.example.levelup_gamer.ui.theme.screens.ModalDrawer.MyModalDrawer
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
+// import kotlinx.coroutines.CoroutineScope // <- No se usaba
+// import kotlinx.coroutines.Dispatchers // <- No se usaba
+// import kotlinx.coroutines.delay // <- No se usaba
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
@@ -55,13 +54,18 @@ import androidx.compose.ui.platform.LocalContext
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
-                      onNavigateToLogin: () -> Unit ) {//con esta función establecemos las principales características del contenedor y del diseño
+fun HomeScreenCompact(
+    onNavigateToRegister: () -> Unit,
+    onNavigateToLogin: () -> Unit,
+    // Parámetros añadidos:
+    onNavigateToCarrito: () -> Unit,
+    productoViewModel: ProductoViewModel
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) //acá creamos el estado del menú inicialmente
-
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
 
-    val productoViewModel: ProductoViewModel = viewModel()
+    // Eliminamos la creación local del ViewModel:
+    // val productoViewModel: ProductoViewModel = viewModel() // <- ELIMINADO
 
     val context = LocalContext.current
 
@@ -74,7 +78,7 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
             verticalArrangement = Arrangement.spacedBy(16.dp),
 
 
-        ) {
+            ) {
             Text("Menú", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onPrimary) //le damos unos estilos
             HorizontalDivider() //nos da una sepación entre elementos con una línea
 
@@ -107,7 +111,8 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
             }
             HorizontalDivider()
             Button(onClick = {
-                onNavigateToRegister() // cuando se haga click en el botón, se redireccionará el usuario a Register
+                // onClick actualizado:
+                onNavigateToCarrito() // Redirige al carrito
                 scope.launch{drawerState.close()}
             },
                 colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
@@ -173,9 +178,6 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                                     .padding(end = 8.dp),
                                 contentScale = ContentScale.Fit
                             )
-
-
-
                         }
                         Row( //Acá creamos una nueva fila para agregar el carro y alinearlo a la derecha
 
@@ -186,7 +188,8 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                         ) {
                             Button(
                                 onClick = {
-                                    //Acá podemos poner un redireccionamiento a la interfaz del carro de compras
+                                    // onClick actualizado:
+                                    onNavigateToCarrito() // Redirige al carrito
                                 },
                                 colors = ButtonDefaults.buttonColors( //estilos
                                     containerColor = MaterialTheme.colorScheme.onPrimary,
@@ -224,11 +227,11 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                 //Listado de productos
 
                 Column( // a cada producto en coliumna
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally //centramos el contenido
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally //centramos el contenido
 
-                    ){
+                ){
                     //producto 1
 
                     Image(
@@ -245,9 +248,9 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                     )
                     Button(
                         onClick = {
-                            val producto = com.example.levelup_gamer.model.Producto(1, "Play Station 5", 599.990)
+                            val producto = com.example.levelup_gamer.model.Producto(1, "Play Station 5", 599990.0)
+                            // Usamos el ViewModel que recibimos por parámetro
                             productoViewModel.agregarAlCarrito(producto)
-
 
                             Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
                         },
@@ -255,8 +258,6 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                             containerColor = MaterialTheme.colorScheme.onSurface,
                             contentColor = MaterialTheme.colorScheme.onPrimary
                             //colores en el borde
-
-
                         ),
                         modifier = Modifier.padding(8.dp)
                             .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp))
@@ -281,7 +282,8 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                     )
                     Button(
                         onClick = {
-                            val producto = com.example.levelup_gamer.model.Producto(2, "Silla gamer", 79.990)
+                            val producto = com.example.levelup_gamer.model.Producto(2, "Silla gamer", 79990.0)
+                            // Usamos el ViewModel que recibimos por parámetro
                             productoViewModel.agregarAlCarrito(producto)
 
                             Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
@@ -313,7 +315,8 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
                     )
                     Button(
                         onClick = {
-                            val producto = com.example.levelup_gamer.model.Producto(3, "PC Gamer", 899.990)
+                            val producto = com.example.levelup_gamer.model.Producto(3, "PC Gamer", 899990.0)
+                            // Usamos el ViewModel que recibimos por parámetro
                             productoViewModel.agregarAlCarrito(producto)
 
                             Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
@@ -334,5 +337,3 @@ fun HomeScreenCompact(onNavigateToRegister: () -> Unit,
         }
     }
 }
-
-//La versión móvil no está al 100% lista

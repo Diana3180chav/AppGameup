@@ -9,14 +9,20 @@ import com.example.levelup_gamer.ui.theme.screens.home.HomeScreen
 import com.example.levelup_gamer.ui.theme.screens.login.LoginScreen
 import com.example.levelup_gamer.ui.theme.screens.register.RegisterScreen
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
+// 1. IMPORTAR EL VIEWMODEL DE PRODUCTO
+import com.example.levelup_gamer.viewmodel.ProductoViewModel
+// 2. IMPORTAR LA NUEVA PANTALLA DE CARRITO (que crearemos en el paso 3)
+import com.example.levelup_gamer.ui.theme.screens.carrito.CarritoScreen
 
 
 @Composable
 fun AppNavigation(){
     val navController = rememberNavController()
 
-    //aquí solo una vez creamos el viewmodel
+    // Creamos los ViewModels aquí para compartirlos en todas las pantallas
     val usuarioViewModel: UsuarioViewModel = viewModel()
+    // 3. CREAR EL PRODUCTOVIEWMODEL AQUÍ
+    val productoViewModel: ProductoViewModel = viewModel()
 
     NavHost(
         navController = navController,
@@ -27,7 +33,11 @@ fun AppNavigation(){
         composable("home") {
             HomeScreen(
                 onNavigateToRegister = { navController.navigate("register") },
-                onNavigateToLogin = { navController.navigate("iniciar session") }
+                onNavigateToLogin = { navController.navigate("iniciar session") },
+                // 4. AÑADIR NAVEGACIÓN AL CARRITO
+                onNavigateToCarrito = { navController.navigate("carrito") },
+                // 5. PASAR EL VIEWMODEL A LA HOME
+                productoViewModel = productoViewModel
             )
         }
 
@@ -56,6 +66,15 @@ fun AppNavigation(){
                 onNavigateToHome = { navController.navigate("home") },
                 onNavigateToLogin = {navController.navigate("iniciar session")},
                 viewModel = usuarioViewModel
+            )
+        }
+
+        composable("carrito") {
+            CarritoScreen(
+                // Le pasamos el mismo ViewModel
+                productoViewModel = productoViewModel,
+                // Le damos una función para volver atrás
+                onNavigateBack = { navController.popBackStack() }
             )
         }
     }
