@@ -72,12 +72,4 @@ class LoginViewModel : ViewModel() {
         }
     }
 
-    fun limpiarCampos() {
-        _estadoLogin.value = EstadoLogin()
-        _loginExitoso.value = false
-    }
-
-    fun limpiarErrores() {
-        _estadoLogin.value = _estadoLogin.value.copy(errores = ErroresLogin())
-    }
 }
