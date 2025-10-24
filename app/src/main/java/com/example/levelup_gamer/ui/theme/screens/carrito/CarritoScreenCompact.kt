@@ -57,7 +57,8 @@ import androidx.compose.runtime.setValue
 @Composable
 fun CarritoScreenCompact(
     productoViewModel: ProductoViewModel, // El ViewModel que contiene la lógica y datos del carrito.
-    onNavigateBack: () -> Unit // La función (lambda) para navegar hacia atrás.
+    onNavigateBack: () -> Unit, // La función (lambda) para navegar hacia atrás.
+    onNavigateToPedidoExitoso: () -> Unit
 ) {
     // 1. OBSERVAMOS EL ESTADO DEL CARRITO
     // 'collectAsState()' convierte el Flow del ViewModel en un "State" que Compose
@@ -216,6 +217,7 @@ fun CarritoScreenCompact(
 
                             // 3. Al terminar (sea exitoso o no), detiene la animación
                             isLoading = false
+                            onNavigateToPedidoExitoso()
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),

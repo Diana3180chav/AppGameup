@@ -10,7 +10,8 @@ import androidx.compose.animation.ExperimentalAnimationApi
 @Composable
 fun CarritoScreen(
     productoViewModel: ProductoViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToPedidoExitoso: () -> Unit
 ) {
     val windowSizeClass = obtenerWindowSizeClass()
 
@@ -20,19 +21,22 @@ fun CarritoScreen(
             // también está marcada como experimental.
             CarritoScreenCompact(
                 productoViewModel = productoViewModel,
-                onNavigateBack = onNavigateBack
+                onNavigateBack = onNavigateBack,
+                onNavigateToPedidoExitoso = onNavigateToPedidoExitoso
             )
         }
         WindowWidthSizeClass.Medium -> {
             CarritoScreenMedium(
                 productoViewModel = productoViewModel,
-                onNavigateBack = onNavigateBack
+                onNavigateBack = onNavigateBack,
+                onNavigateToPedidoExitoso = onNavigateToPedidoExitoso
             )
         }
         WindowWidthSizeClass.Expanded -> {
             CarritoScreenExpanded(
                 productoViewModel = productoViewModel,
-                onNavigateBack = onNavigateBack
+                onNavigateBack = onNavigateBack,
+                onNavigateToPedidoExitoso = onNavigateToPedidoExitoso
             )
         }
     }
