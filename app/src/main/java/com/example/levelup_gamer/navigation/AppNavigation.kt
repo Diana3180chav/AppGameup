@@ -13,6 +13,7 @@ import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
 // 2. IMPORTAR LA NUEVA PANTALLA DE CARRITO (que crearemos en el paso 3)
 import com.example.levelup_gamer.ui.theme.screens.carrito.CarritoScreen
+import com.example.levelup_gamer.viewmodel.RegisterViewModel
 import com.example.levelup_gamer.viewmodel.LoginViewModel
 
 
@@ -24,6 +25,9 @@ fun AppNavigation(){
     val usuarioViewModel: UsuarioViewModel = viewModel()
     // 3. CREAR EL PRODUCTOVIEWMODEL AQUÍ
     val productoViewModel: ProductoViewModel = viewModel()
+
+    val registerViewModel: RegisterViewModel = viewModel()
+
 
     NavHost(
         navController = navController,
@@ -56,7 +60,8 @@ fun AppNavigation(){
                 },
                 onNavigateToRegister = { navController.navigate("register")
                 },
-                onNavigateToHome = { navController.navigate("home")
+                onNavigateToHome = {
+                    navController.navigate("home")
                 }
             )
         }
@@ -67,7 +72,8 @@ fun AppNavigation(){
             RegisterScreen(
                 onNavigateToHome = { navController.navigate("home") },
                 onNavigateToLogin = {navController.navigate("iniciar session")},
-                viewModel = usuarioViewModel
+                viewModel = usuarioViewModel,
+                RegisterViewModel = registerViewModel
             )
         }
 

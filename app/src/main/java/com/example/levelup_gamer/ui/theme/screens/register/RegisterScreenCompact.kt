@@ -1,5 +1,8 @@
 package com.example.levelup_gamer.ui.theme.screens.register
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -13,13 +16,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.example.levelup_gamer.R
 import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
+import com.example.levelup_gamer.ui.theme.screens.register.Camera.CameraPreview
+import com.example.levelup_gamer.viewmodel.RegisterViewModel
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -31,14 +39,18 @@ import kotlinx.coroutines.launch
 fun RegisterScreenCompact(
     onNavigateToHome: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    viewModel: UsuarioViewModel
+    viewModel: UsuarioViewModel,
+    registerViewModel: RegisterViewModel
 ) {
     val estado by viewModel.estado.collectAsState()
     val context = LocalContext.current
     val registrado by viewModel.registroExitoso.collectAsState()
     var showPassword by remember { mutableStateOf(false) } // Estado para mostrar/ocultar contraseña
     var cargando by remember { mutableStateOf(false) } // Estado para mostrar/ocultar el cargando
-
+    val cameraActiva by registerViewModel.siCamaraActiva.collectAsState()
+    val fotoUri by registerViewModel.fotoUri.collectAsState()
+    //var mostrarTexto by rememberSaveable { mutableStateOf(false) }
+    //var toastMostrado by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         containerColor = loginBg, // Usa el color de fondo del login (negro puro)
@@ -89,11 +101,66 @@ fun RegisterScreenCompact(
             )
             Spacer(modifier = Modifier.height(24.dp))
 
+            //Acá pedimos permio y se activa la camara una vez que se entregue.
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+
+                ActivityCompat.requestPermissions(
+                    context as Activity,
+                    arrayOf(Manifest.permission.CAMERA),
+                    100
+                )
+            }
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+                Button(
+                    onClick = { registerViewModel.activarCamara() },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = neonBlue,
+                        contentColor = Color.Black
+                    )
+                ) {
+                    Text("Registra tu foto de perfil")
+                }
+
+                //LLamamos a la camara si se preionó el botón
+                if (cameraActiva) {
+                    CameraPreview(
+                        onTomarFoto = registerViewModel::onTomarFoto,
+                        registerViewModel = registerViewModel
+                    )
+                }
+
+                //Confirmamos con un texto que la foto se generó
+                LaunchedEffect(fotoUri) {
+                    if (fotoUri != null && !registerViewModel.fotoProcesada.value) {
+                        Toast.makeText(context, "Foto capturada ", Toast.LENGTH_SHORT).show()
+                        registerViewModel.marcarFotoProcesada()
+                    }
+                }
+
+                //opción para poder eliminar la foto
+                if (fotoUri != null) {
+                    Button(
+                        onClick = {
+                            registerViewModel.onLimpiarFoto() // limpia foto y resetea fotoProcesada
+                        },
+                        colors = ButtonDefaults.buttonColors( // le pasamos colores al botón
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Eliminar foto")
+                    }
+                }
+
+
+
 
                 // --- Campo Rut ---
                 OutlinedTextField(
@@ -114,6 +181,7 @@ fun RegisterScreenCompact(
                     modifier = Modifier.fillMaxWidth(),
                     colors = outlinedTextFieldColors() // Usa la función de colores
                 )
+
 
                 // --- Campo Nombre de usuario ---
                 OutlinedTextField(
