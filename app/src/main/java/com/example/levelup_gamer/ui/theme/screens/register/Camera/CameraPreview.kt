@@ -101,6 +101,8 @@ fun CameraPreview(
                 (previewView.surfaceProvider)
             )
 
+            //texto de prueba
+
             try{
                 //Desvincula cualquier uso anterior de la cámara
                 cameraProvider.unbindAll()
