@@ -14,6 +14,9 @@ import com.example.levelup_gamer.viewmodel.ProductoViewModel
 // 2. IMPORTAR LA NUEVA PANTALLA DE CARRITO (que crearemos en el paso 3)
 import com.example.levelup_gamer.ui.theme.screens.carrito.CarritoScreen
 import com.example.levelup_gamer.viewmodel.RegisterViewModel
+import com.example.levelup_gamer.viewmodel.LoginViewModel
+import com.example.levelup_gamer.ui.theme.screens.pedidoExitoso.PedidoExitosoScreen
+
 
 
 @Composable
@@ -47,22 +50,24 @@ fun AppNavigation(){
 
         // 🔑redirección al login
         composable("iniciar session") {
+            val LoginViewModel: LoginViewModel = viewModel()   // instancia del V
             LoginScreen(
+                viewModel = LoginViewModel,
                 onLoginSuccess = {
                     navController.navigate("home") { // env´ía al usuario a la pantalla homw
                         popUpTo("iniciar session") { inclusive = true } //Elimina de la pila todas las pantallas hasta iniciar session
-                         //e inclusive = true elimina también la pantalla iniciar sesion de la pila
+                        //e inclusive = true elimina también la pantalla iniciar sesion de la pila
                         launchSingleTop = true // evita que se creen instancias duplicadas de una misma pantalla
                     }
                 },
-                onNavigateToRegister = {
-                    navController.navigate("register")
+                onNavigateToRegister = { navController.navigate("register")
                 },
                 onNavigateToHome = {
                     navController.navigate("home")
                 }
             )
         }
+
 
         // redirección a registro
         composable("register") {
@@ -79,7 +84,20 @@ fun AppNavigation(){
                 // Le pasamos el mismo ViewModel
                 productoViewModel = productoViewModel,
                 // Le damos una función para volver atrás
-                onNavigateBack = { navController.popBackStack() }
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPedidoExitoso = { navController.navigate("pedidoExitoso") } // <- NUEVO
+            )
+        }
+
+        composable("pedidoExitoso") {
+            PedidoExitosoScreen(
+                viewModel = productoViewModel,
+                onFinalizar = {
+                    // Ejemplo: vuelve al home y limpia back stack si quieres
+                    navController.navigate("home") {
+                        launchSingleTop = true
+                    }
+                }
             )
         }
     }

@@ -6,11 +6,13 @@ import com.example.levelup_gamer.viewmodel.ProductoViewModel
 @Composable
 fun CarritoScreenExpanded(
     productoViewModel: ProductoViewModel,
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToPedidoExitoso: () -> Unit
 ) {
     // Igualmente, usamos el diseño compacto.
     CarritoScreenCompact(
         productoViewModel = productoViewModel,
-        onNavigateBack = onNavigateBack
+        onNavigateBack = onNavigateBack,
+        onNavigateToPedidoExitoso = onNavigateToPedidoExitoso
     )
 }
