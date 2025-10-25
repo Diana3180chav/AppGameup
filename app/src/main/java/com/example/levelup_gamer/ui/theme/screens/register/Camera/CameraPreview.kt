@@ -60,6 +60,7 @@ fun CameraPreview(
         contract = ActivityResultContracts.RequestPermission()
     ) { concedido ->
         if (concedido) {
+            Toast.makeText(context, "Permiso concedido", Toast.LENGTH_SHORT).show()
             permisoConcedido = true
             registerViewModel.activarCamara()
         } else {
@@ -120,7 +121,7 @@ fun CameraPreview(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxWidth()
         ){
-            Button(onClick = {
+            Button(onClick = { //Captura una foto
                 val fotoArchivo = File(context.cacheDir,"${System.currentTimeMillis()}.jpg")
                 val output = ImageCapture.OutputFileOptions.Builder(fotoArchivo).build()
                 imageCapture.takePicture(

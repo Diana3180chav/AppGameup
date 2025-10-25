@@ -93,6 +93,9 @@ dependencies {
     //Le damos las dependencias para trabajar con CamaraX
     val cameraxVersion = "1.1.0-beta01"
 
+    val activity_version = "1.9.3"
+    val fragment_version = "1.8.5"
+
     implementation("androidx.camera:camera-core:$cameraxVersion")
     implementation("androidx.camera:camera-camera2:$cameraxVersion")
     implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
@@ -100,5 +103,11 @@ dependencies {
 
     implementation("androidx.camera:camera-view:$cameraxVersion")
     implementation("androidx.camera:camera-extensions:$cameraxVersion")
+
+    implementation("androidx.activity:activity-ktx:${activity_version}")
+    implementation("androidx.fragment:fragment-ktx:${fragment_version}")
+
+    implementation("io.coil-kt:coil-compose:2.7.0") //sumamos Coil Compose para trabjar con el acceso a la galeria
+
 
 }

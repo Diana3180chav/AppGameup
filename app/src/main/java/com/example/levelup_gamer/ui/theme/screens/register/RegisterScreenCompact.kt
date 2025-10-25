@@ -3,7 +3,10 @@ package com.example.levelup_gamer.ui.theme.screens.register
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,9 +27,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import coil.compose.rememberAsyncImagePainter
 import com.example.levelup_gamer.R
 import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
 import com.example.levelup_gamer.ui.theme.screens.register.Camera.CameraPreview
+import com.example.levelup_gamer.ui.theme.screens.register.Galeria.GaleriaPreview
 import com.example.levelup_gamer.viewmodel.RegisterViewModel
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -49,6 +54,8 @@ fun RegisterScreenCompact(
     var cargando by remember { mutableStateOf(false) } // Estado para mostrar/ocultar el cargando
     val cameraActiva by registerViewModel.siCamaraActiva.collectAsState()
     val fotoUri by registerViewModel.fotoUri.collectAsState()
+    val selectedImageUri by registerViewModel.selectedImageUri
+    val galeriaAbierta by registerViewModel.galeriaAbierta.collectAsState()
     //var mostrarTexto by rememberSaveable { mutableStateOf(false) }
     //var toastMostrado by rememberSaveable { mutableStateOf(false) }
 
@@ -112,6 +119,7 @@ fun RegisterScreenCompact(
                 )
             }
 
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -119,7 +127,7 @@ fun RegisterScreenCompact(
             ) {
 
                 Button(
-                    onClick = { registerViewModel.activarCamara() },
+                    onClick = { registerViewModel.onlipiarGaleria(); registerViewModel.activarCamara(); registerViewModel.activarGaleria() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = neonBlue,
                         contentColor = Color.Black
@@ -128,12 +136,22 @@ fun RegisterScreenCompact(
                     Text("Registra tu foto de perfil")
                 }
 
-                //LLamamos a la camara si se preionó el botón
-                if (cameraActiva) {
-                    CameraPreview(
-                        onTomarFoto = registerViewModel::onTomarFoto,
-                        registerViewModel = registerViewModel
-                    )
+                if (galeriaAbierta) {
+                    GaleriaPreview(registerViewModel = registerViewModel)
+                }
+
+                if (selectedImageUri != null){
+                    Button(
+                        onClick = {
+                            registerViewModel.onlipiarGaleria()
+                        },
+                        colors = ButtonDefaults.buttonColors( // le pasamos colores al botón
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        )
+                    ){
+                        Text("Eliminar foto seleccionada de la galería")
+                    }
                 }
 
                 //Confirmamos con un texto que la foto se generó
@@ -142,6 +160,14 @@ fun RegisterScreenCompact(
                         Toast.makeText(context, "Foto capturada ", Toast.LENGTH_SHORT).show()
                         registerViewModel.marcarFotoProcesada()
                     }
+                }
+
+                //LLamamos a la camara si se preionó el botón
+                if (cameraActiva) {
+                    CameraPreview(
+                        onTomarFoto = registerViewModel::onTomarFoto,
+                        registerViewModel = registerViewModel
+                    )
                 }
 
                 //opción para poder eliminar la foto
@@ -155,11 +181,21 @@ fun RegisterScreenCompact(
                             contentColor = Color.White
                         )
                     ) {
-                        Text("Eliminar foto")
+                        Text("Eliminar foto de la cámara")
                     }
                 }
 
-
+                selectedImageUri?.let {
+                    uri ->
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = "Imagen seleccionada",
+                        modifier = Modifier
+                            .size(200.dp)
+                            .padding(bottom = 24.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
 
                 // --- Campo Rut ---
