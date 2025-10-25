@@ -51,6 +51,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.example.levelup_gamer.ui.theme.neonBlueDim
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
@@ -149,7 +150,7 @@ fun HomeScreenCompact(
 
     MyModalDrawer(drawerState = drawerState, drawerContent = drawerContent){ //acá estámos pasando el estado de drawerState
         Scaffold( //es el contenedor principal que organiza las zonas típicas de una pantalla
-            containerColor = homeBg,
+            containerColor = fondoPrincipal,
             topBar = { // es similar al header
                 TopAppBar(
                     title = {

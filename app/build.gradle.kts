@@ -107,4 +107,7 @@ dependencies {
     implementation("androidx.activity:activity-ktx:${activity_version}")
     implementation("androidx.fragment:fragment-ktx:${fragment_version}")
 
+    implementation("io.coil-kt:coil-compose:2.7.0") //sumamos Coil Compose para trabjar con el acceso a la galeria
+
+
 }

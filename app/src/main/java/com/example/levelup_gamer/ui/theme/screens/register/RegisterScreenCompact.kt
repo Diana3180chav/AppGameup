@@ -3,7 +3,10 @@ package com.example.levelup_gamer.ui.theme.screens.register
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -24,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import coil.compose.rememberAsyncImagePainter
 import com.example.levelup_gamer.R
 import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
 import com.example.levelup_gamer.ui.theme.screens.register.Camera.CameraPreview
@@ -49,6 +53,7 @@ fun RegisterScreenCompact(
     var cargando by remember { mutableStateOf(false) } // Estado para mostrar/ocultar el cargando
     val cameraActiva by registerViewModel.siCamaraActiva.collectAsState()
     val fotoUri by registerViewModel.fotoUri.collectAsState()
+    val selectedImageUri by registerViewModel.selectedImageUri
     //var mostrarTexto by rememberSaveable { mutableStateOf(false) }
     //var toastMostrado by rememberSaveable { mutableStateOf(false) }
 
@@ -112,6 +117,13 @@ fun RegisterScreenCompact(
                 )
             }
 
+            val galleryLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.GetContent()
+            ){
+                    uri: Uri? ->
+                registerViewModel.setImageUri(uri)
+            }
+
             Column(
                 modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -158,6 +170,31 @@ fun RegisterScreenCompact(
                         Text("Eliminar foto")
                     }
                 }
+
+                selectedImageUri?.let {
+                    uri ->
+                    Image(
+                        painter = rememberAsyncImagePainter(uri),
+                        contentDescription = "Imagen seleccionada",
+                        modifier = Modifier
+                            .size(200.dp)
+                            .padding(bottom = 24.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                }
+
+                Button(
+                    onClick = {
+                        galleryLauncher.launch("image/*")
+
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp)
+                ){
+                    Text("Selecciona una imagen de tu galería")
+                }
+
 
 
 
