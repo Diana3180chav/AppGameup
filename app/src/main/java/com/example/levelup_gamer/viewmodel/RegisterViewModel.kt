@@ -20,8 +20,16 @@ class RegisterViewModel : ViewModel() {
     //creamos el valor fotoUri para guardar la dirección de dónde está la dirección o dónde se encontrará guardado el archivo
     private val _fotoUri = MutableStateFlow<Uri?>(null)
 
+    //acá tenemos la lógica la imagen seleccionada de la galería
     private val _selectedImageUri = mutableStateOf<Uri?>(null) //ocupamos estados para manejar el proceso del almacenamiento de la foto
     val selectedImageUri: State<Uri?> = _selectedImageUri //agregamos una variable para almacenar la imagen seleccionada
+
+    private val _siGaleriaAbierta = MutableStateFlow(false)
+
+    val galeriaAbierta: StateFlow<Boolean> = _siGaleriaAbierta.asStateFlow()
+
+
+
 
     val fotoUri: StateFlow<Uri?> = _fotoUri
 
@@ -52,9 +60,25 @@ class RegisterViewModel : ViewModel() {
         _fotoProcesada.value = false
     }
 
+
+    fun toggleGaleria(){ // con esta función aparecemos y desaparecemos el botón de la galería
+        _siGaleriaAbierta.value = !_siGaleriaAbierta.value
+    }
+
+    //funciones de la galería
+
+    fun activarGaleria(){
+        _siGaleriaAbierta.value = true
+    }
+
+
     fun setImageUri(uri: Uri?){ //acá se guarda la imagen seleccionada de la galería
         _selectedImageUri.value = uri
     }
 
+    fun onlipiarGaleria(){
+        _siGaleriaAbierta.value = false
+        _selectedImageUri.value = null
+    }
 
 }

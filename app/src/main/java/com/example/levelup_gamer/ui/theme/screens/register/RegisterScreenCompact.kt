@@ -31,6 +31,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.example.levelup_gamer.R
 import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
 import com.example.levelup_gamer.ui.theme.screens.register.Camera.CameraPreview
+import com.example.levelup_gamer.ui.theme.screens.register.Galeria.GaleriaPreview
 import com.example.levelup_gamer.viewmodel.RegisterViewModel
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -54,6 +55,7 @@ fun RegisterScreenCompact(
     val cameraActiva by registerViewModel.siCamaraActiva.collectAsState()
     val fotoUri by registerViewModel.fotoUri.collectAsState()
     val selectedImageUri by registerViewModel.selectedImageUri
+    val galeriaAbierta by registerViewModel.galeriaAbierta.collectAsState()
     //var mostrarTexto by rememberSaveable { mutableStateOf(false) }
     //var toastMostrado by rememberSaveable { mutableStateOf(false) }
 
@@ -117,12 +119,6 @@ fun RegisterScreenCompact(
                 )
             }
 
-            val galleryLauncher = rememberLauncherForActivityResult(
-                contract = ActivityResultContracts.GetContent()
-            ){
-                    uri: Uri? ->
-                registerViewModel.setImageUri(uri)
-            }
 
             Column(
                 modifier = Modifier.fillMaxWidth(),
@@ -131,13 +127,31 @@ fun RegisterScreenCompact(
             ) {
 
                 Button(
-                    onClick = { registerViewModel.activarCamara() },
+                    onClick = { registerViewModel.activarCamara(); registerViewModel.activarGaleria() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = neonBlue,
                         contentColor = Color.Black
                     )
                 ) {
                     Text("Registra tu foto de perfil")
+                }
+
+                if (galeriaAbierta) {
+                    GaleriaPreview(registerViewModel = registerViewModel)
+                }
+
+                if (selectedImageUri != null){
+                    Button(
+                        onClick = {
+                            registerViewModel.onlipiarGaleria()
+                        },
+                        colors = ButtonDefaults.buttonColors( // le pasamos colores al botón
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        )
+                    ){
+                        Text("Eliminar foto seleccionada de la galería")
+                    }
                 }
 
                 //LLamamos a la camara si se preionó el botón
@@ -167,7 +181,7 @@ fun RegisterScreenCompact(
                             contentColor = Color.White
                         )
                     ) {
-                        Text("Eliminar foto")
+                        Text("Eliminar foto de la cámara")
                     }
                 }
 
@@ -182,20 +196,6 @@ fun RegisterScreenCompact(
                         contentScale = ContentScale.Crop
                     )
                 }
-
-                Button(
-                    onClick = {
-                        galleryLauncher.launch("image/*")
-
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp)
-                ){
-                    Text("Selecciona una imagen de tu galería")
-                }
-
-
 
 
                 // --- Campo Rut ---
