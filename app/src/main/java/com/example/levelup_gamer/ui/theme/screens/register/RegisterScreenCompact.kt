@@ -161,7 +161,6 @@ fun RegisterScreenCompact(
 
 
 
-
                 // --- Campo Rut ---
                 OutlinedTextField(
                     value = estado.rut,
