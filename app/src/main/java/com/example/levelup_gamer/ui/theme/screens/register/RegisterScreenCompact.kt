@@ -127,7 +127,7 @@ fun RegisterScreenCompact(
             ) {
 
                 Button(
-                    onClick = { registerViewModel.activarCamara(); registerViewModel.activarGaleria() },
+                    onClick = { registerViewModel.onlipiarGaleria(); registerViewModel.activarCamara(); registerViewModel.activarGaleria() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = neonBlue,
                         contentColor = Color.Black
@@ -154,20 +154,20 @@ fun RegisterScreenCompact(
                     }
                 }
 
-                //LLamamos a la camara si se preionó el botón
-                if (cameraActiva) {
-                    CameraPreview(
-                        onTomarFoto = registerViewModel::onTomarFoto,
-                        registerViewModel = registerViewModel
-                    )
-                }
-
                 //Confirmamos con un texto que la foto se generó
                 LaunchedEffect(fotoUri) {
                     if (fotoUri != null && !registerViewModel.fotoProcesada.value) {
                         Toast.makeText(context, "Foto capturada ", Toast.LENGTH_SHORT).show()
                         registerViewModel.marcarFotoProcesada()
                     }
+                }
+
+                //LLamamos a la camara si se preionó el botón
+                if (cameraActiva) {
+                    CameraPreview(
+                        onTomarFoto = registerViewModel::onTomarFoto,
+                        registerViewModel = registerViewModel
+                    )
                 }
 
                 //opción para poder eliminar la foto

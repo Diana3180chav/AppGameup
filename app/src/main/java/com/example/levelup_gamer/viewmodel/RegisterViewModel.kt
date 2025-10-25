@@ -13,6 +13,8 @@ import androidx.compose.runtime.State
 
 class RegisterViewModel : ViewModel() {
 
+    //lógica de la cámara
+
     //Con esto manejamos el estado de la cámara
     private val _siCamaraActiva = MutableStateFlow(false)
     val siCamaraActiva: StateFlow<Boolean> = _siCamaraActiva.asStateFlow()
@@ -20,22 +22,35 @@ class RegisterViewModel : ViewModel() {
     //creamos el valor fotoUri para guardar la dirección de dónde está la dirección o dónde se encontrará guardado el archivo
     private val _fotoUri = MutableStateFlow<Uri?>(null)
 
+
+    //*************************
+
     //acá tenemos la lógica la imagen seleccionada de la galería
     private val _selectedImageUri = mutableStateOf<Uri?>(null) //ocupamos estados para manejar el proceso del almacenamiento de la foto
     val selectedImageUri: State<Uri?> = _selectedImageUri //agregamos una variable para almacenar la imagen seleccionada
-
-    private val _siGaleriaAbierta = MutableStateFlow(false)
-
-    val galeriaAbierta: StateFlow<Boolean> = _siGaleriaAbierta.asStateFlow()
-
-
-
 
     val fotoUri: StateFlow<Uri?> = _fotoUri
 
     private val _fotoProcesada = mutableStateOf(false) //ocupamos estados para manejar el proceso de la foto
     val fotoProcesada: State<Boolean> = _fotoProcesada
 
+    private val _permisoGaleriaConcedido = MutableStateFlow(false) //ocupamos estados para manejar el estado del boton de la galeria
+
+
+    val permisoGaleriaConcedido: StateFlow<Boolean> = _permisoGaleriaConcedido.asStateFlow()
+
+
+
+    private val _siGaleriaAbierta = MutableStateFlow(false)
+
+    val galeriaAbierta: StateFlow<Boolean> = _siGaleriaAbierta.asStateFlow()
+
+    private val _fotoGaleriaProcesada = mutableStateOf(false)
+    val fotoGaleriaProcesada: State<Boolean> = _fotoGaleriaProcesada
+
+    //******************
+
+    //Nuestras principales funciones
 
     fun toggleCamera(){
         _siCamaraActiva.value = !_siCamaraActiva.value
@@ -76,9 +91,14 @@ class RegisterViewModel : ViewModel() {
         _selectedImageUri.value = uri
     }
 
+    fun marcarPermisoGaleriaConcedido(){
+        _permisoGaleriaConcedido.value = true
+    }
+
     fun onlipiarGaleria(){
         _siGaleriaAbierta.value = false
         _selectedImageUri.value = null
+        _permisoGaleriaConcedido.value = false
     }
 
 }
