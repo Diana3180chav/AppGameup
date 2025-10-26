@@ -7,12 +7,17 @@ import com.example.levelup_gamer.viewmodel.ProductoViewModel
 fun CarritoScreenExpanded(
     productoViewModel: ProductoViewModel,
     onNavigateBack: () -> Unit,
-    onNavigateToPedidoExitoso: () -> Unit
+    // 1. CORRECCIÓN: El parámetro debe coincidir con el nuevo flujo
+    onNavigateToFormularioInvitado: () -> Unit
 ) {
+    // 2. CORRECCIÓN: No definas otra función aquí.
+    //    Simplemente llama a 'CarritoScreenCompact'
+
     // Igualmente, usamos el diseño compacto.
     CarritoScreenCompact(
         productoViewModel = productoViewModel,
         onNavigateBack = onNavigateBack,
-        onNavigateToPedidoExitoso = onNavigateToPedidoExitoso
+        // 3. CORRECCIÓN: Pasar el parámetro correcto
+        onNavigateToFormularioInvitado = onNavigateToFormularioInvitado
     )
 }
