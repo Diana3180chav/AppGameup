@@ -17,6 +17,11 @@ import com.example.levelup_gamer.viewmodel.RegisterViewModel
 import com.example.levelup_gamer.viewmodel.LoginViewModel
 import com.example.levelup_gamer.ui.theme.screens.pedidoExitoso.PedidoExitosoScreen
 
+// --- NUEVOS IMPORTS ---
+import com.example.levelup_gamer.viewmodel.InvitadoViewModel
+import com.example.levelup_gamer.ui.theme.screens.formularioinvitado.FormularioInvitadoScreen
+import com.example.levelup_gamer.ui.theme.screens.checkout.CheckoutScreen
+// ----------------------
 
 
 @Composable
@@ -25,10 +30,12 @@ fun AppNavigation(){
 
     // Creamos los ViewModels aquí para compartirlos en todas las pantallas
     val usuarioViewModel: UsuarioViewModel = viewModel()
-    // 3. CREAR EL PRODUCTOVIEWMODEL AQUÍ
     val productoViewModel: ProductoViewModel = viewModel()
-
     val registerViewModel: RegisterViewModel = viewModel()
+
+    // --- NUEVO VIEWMODEL DE INVITADO ---
+    val invitadoViewModel: InvitadoViewModel = viewModel()
+    // ---------------------------------
 
 
     NavHost(
@@ -36,19 +43,17 @@ fun AppNavigation(){
         startDestination = "home"
     ){
 
-        // redirección al home
+        // ... composable "home" (sin cambios) ...
         composable("home") {
             HomeScreen(
                 onNavigateToRegister = { navController.navigate("register") },
                 onNavigateToLogin = { navController.navigate("iniciar session") },
-                // 4. AÑADIR NAVEGACIÓN AL CARRITO
                 onNavigateToCarrito = { navController.navigate("carrito") },
-                // 5. PASAR EL VIEWMODEL A LA HOME
                 productoViewModel = productoViewModel
             )
         }
 
-        // 🔑redirección al login
+        // ... composable "iniciar session" (sin cambios) ...
         composable("iniciar session") {
             val LoginViewModel: LoginViewModel = viewModel()   // instancia del V
             LoginScreen(
@@ -69,7 +74,7 @@ fun AppNavigation(){
         }
 
 
-        // redirección a registro
+        // ... composable "register" (sin cambios) ...
         composable("register") {
             RegisterScreen(
                 onNavigateToHome = { navController.navigate("home") },
@@ -81,20 +86,49 @@ fun AppNavigation(){
 
         composable("carrito") {
             CarritoScreen(
-                // Le pasamos el mismo ViewModel
                 productoViewModel = productoViewModel,
-                // Le damos una función para volver atrás
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPedidoExitoso = { navController.navigate("pedidoExitoso") } // <- NUEVO
+
+                // --- MODIFICADO ---
+                // Antes: onNavigateToPedidoExitoso = { navController.navigate("pedidoExitoso") }
+                // Ahora:
+                onNavigateToFormularioInvitado = { navController.navigate("formularioInvitado") }
             )
         }
 
+        // --- NUEVA RUTA: FORMULARIO ---
+        composable("formularioInvitado") {
+            FormularioInvitadoScreen(
+                invitadoViewModel = invitadoViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToCheckout = { navController.navigate("checkout") }
+            )
+        }
+
+        // --- NUEVA RUTA: CHECKOUT (RESUMEN) ---
+        composable("checkout") {
+            CheckoutScreen(
+                productoViewModel = productoViewModel,
+                invitadoViewModel = invitadoViewModel,
+                onNavigateBack = { navController.popBackStack() },
+                onNavigateToPedidoExitoso = { navController.navigate("pedidoExitoso") }
+            )
+        }
+
+        // --- MODIFICADO: PEDIDO EXITOSO ---
         composable("pedidoExitoso") {
             PedidoExitosoScreen(
-                viewModel = productoViewModel,
+                // Le pasamos ambos ViewModels
+                productoViewModel = productoViewModel,
+                invitadoViewModel = invitadoViewModel,
                 onFinalizar = {
-                    // Ejemplo: vuelve al home y limpia back stack si quieres
+                    // Limpiamos AMBOS viewmodels
+                    productoViewModel.vaciarCarrito()
+                    invitadoViewModel.limpiarDatos()
+
+                    // Vuelve al home y limpia la pila
                     navController.navigate("home") {
+                        popUpTo("home") { inclusive = true }
                         launchSingleTop = true
                     }
                 }

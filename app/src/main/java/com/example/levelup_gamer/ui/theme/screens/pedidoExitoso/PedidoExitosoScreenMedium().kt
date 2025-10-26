@@ -18,16 +18,22 @@ import com.example.levelup_gamer.R
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
 import com.example.levelup_gamer.ui.theme.*
 import androidx.compose.ui.graphics.Color
+// --- IMPORTS AÑADIDOS ---
+import androidx.compose.ui.text.font.FontWeight
+import com.example.levelup_gamer.viewmodel.InvitadoViewModel
+// ------------------------
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PedidoExitosoScreenMedium(
     productoViewModel: ProductoViewModel,
+    invitadoViewModel: InvitadoViewModel, // <-- 1. AÑADIR ESTE PARÁMETRO
     onFinalizar: () -> Unit = {},
     onNavigateToHome: () -> Unit = {}
 ) {
     val carrito by productoViewModel.estadoCarrito.collectAsState()
+    val invitado by invitadoViewModel.datosInvitado.collectAsState() // <-- AÑADIDO
     val total = carrito.sumOf { it.producto.precio * it.cantidad }
 
     Scaffold(
@@ -67,12 +73,26 @@ fun PedidoExitosoScreenMedium(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Top
         ) {
-            // 🟦 Columna izquierda: lista de productos
+            // 🟦 Columna izquierda: Info + lista de productos
             Column(
                 modifier = Modifier
                     .weight(0.6f)
                     .padding(end = 24.dp)
             ) {
+                // --- 2. SECCIÓN DE DATOS DE ENVÍO AÑADIDA ---
+                Text(
+                    "Enviado a:",
+                    color = neonBlue,
+                    style = MaterialTheme.typography.titleLarge
+                )
+                Spacer(Modifier.height(8.dp))
+                InfoInvitadoResumen(label = "Nombre:", valor = invitado.nombre)
+                InfoInvitadoResumen(label = "Email:", valor = invitado.email)
+                InfoInvitadoResumen(label = "Dirección:", valor = invitado.direccion)
+
+                Divider(color = neonBlueDim.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 16.dp))
+                // ---------------------------------------------
+
                 Text(
                     "Detalles del pedido:",
                     color = neonBlue,
@@ -146,5 +166,28 @@ fun PedidoExitosoScreenMedium(
                 }
             }
         }
+    }
+}
+
+/**
+ * 3. AÑADIR ESTA FUNCIÓN HELPER AL FINAL (necesaria para la sección de datos)
+ */
+@Composable
+private fun InfoInvitadoResumen(label: String, valor: String) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 8.dp, vertical = 2.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = textOnDark.copy(alpha = 0.7f),
+            modifier = Modifier.width(80.dp) // Ancho fijo para alinear
+        )
+        Text(
+            text = valor,
+            style = MaterialTheme.typography.bodyMedium,
+            color = textOnDark,
+            fontWeight = FontWeight.Medium
+        )
     }
 }

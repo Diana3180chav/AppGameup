@@ -1,44 +1,43 @@
-package com.example.levelup_gamer.ui.theme.screens.carrito
+package com.example.levelup_gamer.ui.theme.screens.checkout
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import com.example.levelup_gamer.ui.theme.utils.obtenerWindowSizeClass
+import com.example.levelup_gamer.viewmodel.InvitadoViewModel
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
-import androidx.compose.animation.ExperimentalAnimationApi
 
-@OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun CarritoScreen(
+fun CheckoutScreen(
     productoViewModel: ProductoViewModel,
+    invitadoViewModel: InvitadoViewModel,
     onNavigateBack: () -> Unit,
-    // --- MODIFICADO ---
-    onNavigateToFormularioInvitado: () -> Unit // <- Renombrado
+    onNavigateToPedidoExitoso: () -> Unit
 ) {
     val windowSizeClass = obtenerWindowSizeClass()
 
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact -> {
-            CarritoScreenCompact(
+            CheckoutScreenCompact(
                 productoViewModel = productoViewModel,
+                invitadoViewModel = invitadoViewModel,
                 onNavigateBack = onNavigateBack,
-                // --- MODIFICADO ---
-                onNavigateToFormularioInvitado = onNavigateToFormularioInvitado // <- Pasar el nuevo prop
+                onNavigateToPedidoExitoso = onNavigateToPedidoExitoso
             )
         }
         WindowWidthSizeClass.Medium -> {
-            CarritoScreenMedium(
+            CheckoutScreenMedium(
                 productoViewModel = productoViewModel,
+                invitadoViewModel = invitadoViewModel,
                 onNavigateBack = onNavigateBack,
-                // --- MODIFICADO ---
-                onNavigateToFormularioInvitado = onNavigateToFormularioInvitado
+                onNavigateToPedidoExitoso = onNavigateToPedidoExitoso
             )
         }
         WindowWidthSizeClass.Expanded -> {
-            CarritoScreenExpanded(
+            CheckoutScreenExpanded(
                 productoViewModel = productoViewModel,
+                invitadoViewModel = invitadoViewModel,
                 onNavigateBack = onNavigateBack,
-                // --- MODIFICADO ---
-                onNavigateToFormularioInvitado = onNavigateToFormularioInvitado
+                onNavigateToPedidoExitoso = onNavigateToPedidoExitoso
             )
         }
     }

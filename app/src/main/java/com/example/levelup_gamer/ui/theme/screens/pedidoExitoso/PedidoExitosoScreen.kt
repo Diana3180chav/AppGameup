@@ -5,10 +5,13 @@ import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import com.example.levelup_gamer.ui.theme.utils.obtenerWindowSizeClass
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
+import com.example.levelup_gamer.viewmodel.InvitadoViewModel // <-- NUEVO IMPORT
 
 @Composable
 fun PedidoExitosoScreen(
-    viewModel: ProductoViewModel,
+    // --- MODIFICADO ---
+    productoViewModel: ProductoViewModel, // <-- Renombrado para claridad
+    invitadoViewModel: InvitadoViewModel, // <-- NUEVO
     onFinalizar: () -> Unit = {}
 ) {
     val windowSizeClass = obtenerWindowSizeClass()
@@ -17,19 +20,22 @@ fun PedidoExitosoScreen(
     when (windowSizeClass.widthSizeClass) {
         WindowWidthSizeClass.Compact ->
             PedidoExitosoScreenCompact(
-                productoViewModel = viewModel,
+                productoViewModel = productoViewModel,
+                invitadoViewModel = invitadoViewModel, // <-- Pasar VM
                 onFinalizar = onFinalizar
             )
 
         WindowWidthSizeClass.Medium  ->
             PedidoExitosoScreenMedium(
-                productoViewModel = viewModel,
+                productoViewModel = productoViewModel,
+                invitadoViewModel = invitadoViewModel, // <-- Pasar VM
                 onFinalizar = onFinalizar
             )
 
         WindowWidthSizeClass.Expanded ->
             PedidoExitosoScreenExpanded(
-                productoViewModel = viewModel,
+                productoViewModel = productoViewModel,
+                invitadoViewModel = invitadoViewModel, // <-- Pasar VM
                 onFinalizar = onFinalizar
             )
     }

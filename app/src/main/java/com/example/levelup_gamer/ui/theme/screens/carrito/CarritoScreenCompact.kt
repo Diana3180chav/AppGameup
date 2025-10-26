@@ -25,96 +25,67 @@ import androidx.compose.ui.unit.dp
 // Imports de nuestros propios modelos y ViewModels
 import com.example.levelup_gamer.model.CarritoItem
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
-// Imports de nuestros colores de tema
-import com.example.levelup_gamer.ui.theme.homeBg
-import com.example.levelup_gamer.ui.theme.fondoPrincipal
+
+// --- IMPORTACIONES DE TUS COLORES ---
+import com.example.levelup_gamer.ui.theme.loginBg // <-- CAMBIO
+import com.example.levelup_gamer.ui.theme.neonBlue // <-- CAMBIO
+import com.example.levelup_gamer.ui.theme.neonBlueDim // <-- CAMBIO
+import com.example.levelup_gamer.ui.theme.textOnDark // <-- CAMBIO
+import androidx.compose.ui.graphics.Color // <-- CAMBIO: Necesario para el botón
+import androidx.compose.foundation.BorderStroke // <-- CAMBIO: Para bordes de botones
 
 // --- IMPORTACIONES PARA LA ANIMACIÓN DEL BOTÓN ---
-// Import para la animación de contenido (cambia entre texto y círculo)
 import androidx.compose.animation.AnimatedContent
-// Imports para manejar el estado (mutableStateOf, remember)
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-// Import para crear un "scope" o alcance para lanzar corrutinas (tareas asíncronas)
 import androidx.compose.runtime.rememberCoroutineScope
-// Import para tareas asíncronas (delay, launch)
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-// -----------------------------------------------------------------
-// 1. IMPORT NECESARIO para que 'AnimatedContent' funcione sin crashear.
-// Esto le dice a Kotlin que estamos usando una API de Animación "Experimental".
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.setValue
 
-// -----------------------------------------------------------------
-
-
-// 2. AÑADIMOS LAS ANOTACIONES EXPERIMENTALES
-// Le decimos al compilador que aceptamos usar APIs experimentales.
-// 'ExperimentalMaterial3Api' -> Para componentes de Material 3.
-// 'ExperimentalAnimationApi' -> Para 'AnimatedContent'.
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun CarritoScreenCompact(
-    productoViewModel: ProductoViewModel, // El ViewModel que contiene la lógica y datos del carrito.
-    onNavigateBack: () -> Unit, // La función (lambda) para navegar hacia atrás.
-    onNavigateToPedidoExitoso: () -> Unit
+    productoViewModel: ProductoViewModel,
+    onNavigateBack: () -> Unit,
+    onNavigateToFormularioInvitado: () -> Unit
 ) {
-    // 1. OBSERVAMOS EL ESTADO DEL CARRITO
-    // 'collectAsState()' convierte el Flow del ViewModel en un "State" que Compose
-    // puede "observar". Cada vez que la lista en el ViewModel cambie,
-    // esta variable 'carrito' se actualizará y la UI se recompondrá.
     val carrito by productoViewModel.estadoCarrito.collectAsState()
-
-    // 2. CALCULAMOS EL TOTAL
-    // Usamos 'sumOf' para multiplicar el precio de cada item por su cantidad
-    // y luego sumar todos esos subtotales.
     val total = carrito.sumOf { it.producto.precio * it.cantidad }
-
-    // 3. ESTADO PARA LA ANIMACIÓN DEL BOTÓN
-    // 'isLoading' es un estado booleano. 'remember' hace que sobreviva a las
-    // recomposiciones. Cuando sea 'true', mostraremos el círculo girando.
     var isLoading by remember { mutableStateOf(false) }
-    // 'rememberCoroutineScope' nos da un "contexto" para lanzar tareas
-    // asíncronas (como la simulación de pago) sin bloquear la UI.
     val scope = rememberCoroutineScope()
 
-    // 4. ESTRUCTURA PRINCIPAL DE LA PANTALLA
-    // 'Scaffold' provee la estructura básica de Material (TopBar, contenido, etc.)
     Scaffold(
-        containerColor = homeBg, // Color de fondo
+        containerColor = loginBg, // <-- CAMBIO: Fondo oscuro
         topBar = {
-            // La barra de navegación superior
             TopAppBar(
-                title = { Text("Mi Carrito", color = MaterialTheme.colorScheme.onPrimary) },
-                // Ícono de navegación (para volver atrás)
+                title = { Text("Mi Carrito", color = neonBlue) }, // <-- CAMBIO
                 navigationIcon = {
-                    IconButton(onClick = onNavigateBack) { // Llama a la función que nos pasaron
+                    IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.Filled.ArrowBack,
                             contentDescription = "Volver",
-                            tint = MaterialTheme.colorScheme.onPrimary
+                            tint = textOnDark // <-- CAMBIO
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = fondoPrincipal
+                    containerColor = loginBg // <-- CAMBIO: Fondo integrado
                 )
             )
         }
-    ) { innerPadding -> // 'innerPadding' es el espacio que deja el TopAppBar
+    ) { innerPadding ->
 
-        // 5. CONTENIDO PRINCIPAL
-        // Columna que ocupa todo el espacio disponible
         Column(
             modifier = Modifier
-                .padding(innerPadding) // Aplica el padding del TopAppBar
+                .padding(innerPadding)
                 .fillMaxSize()
-                .padding(16.dp) // Un padding nuestro
+                .padding(16.dp)
         ) {
-            // 6. LÓGICA CONDICIONAL: ¿CARRITO VACÍO O CON ITEMS?
+
             if (carrito.isEmpty()) {
-                // Si está vacío, mostramos un mensaje centrado
+                // ... (lógica carrito vacío, asegúrate de que el texto use 'textOnDark')
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
@@ -122,128 +93,75 @@ fun CarritoScreenCompact(
                     Text(
                         "Tu carrito está vacío",
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = textOnDark.copy(alpha = 0.7f),
+                        textAlign = TextAlign.Center
                     )
                 }
             } else {
-                // Si tiene items, mostramos la lista y el total
-
-                // 7. LISTA DE PRODUCTOS
-                // 'LazyColumn' es como un RecyclerView: solo renderiza los items
-                // que se ven en pantalla, haciéndolo muy eficiente.
-                // 'modifier = Modifier.weight(1f)' hace que ocupe todo el espacio
-                // vertical disponible, "empujando" el total hacia abajo.
                 LazyColumn(
                     modifier = Modifier.weight(1f)
                 ) {
-                    // 'items' es el constructor de la lista.
-                    // LA 'key' ES CRUCIAL:
-                    // Le da un ID único a cada item (el id del producto).
-                    // Esto evita que la app crashee cuando eliminamos o
-                    // modificamos un item, porque Compose sabe exactamente cuál es cuál.
                     items(
                         items = carrito,
-                        key = { item -> item.producto.idProducto } // Solución al crash
+                        key = { item -> item.producto.idProducto }
                     ) { item ->
-                        // Por cada 'item' en la lista 'carrito', creamos un Composable
-                        // 'ProductoItemCarrito' (definido más abajo).
-                        ProductoItemCarrito(
+                        ProductoItemCarrito( // Los colores se actualizan dentro de este Composable
                             item = item,
-                            // Pasamos las funciones del ViewModel como lambdas.
-                            // Esto se llama "elevar el estado" (State Hoisting).
                             onAumentar = { productoViewModel.agregarAlCarrito(item.producto) },
                             onDisminuir = { productoViewModel.disminuirCantidad(item) },
                             onEliminar = { productoViewModel.eliminarProductoDelCarrito(item) }
                         )
-                        // Una línea divisoria entre items
-                        HorizontalDivider(color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f))
+                        HorizontalDivider(color = neonBlueDim.copy(alpha = 0.5f)) // <-- CAMBIO
                     }
                 }
 
-                // 8. SECCIÓN DEL TOTAL
-                Spacer(modifier = Modifier.height(16.dp)) // Un espacio en blanco
+                Spacer(modifier = Modifier.height(16.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween, // "Total:" a la izq, "$..." a la der.
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
                         "Total:",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = textOnDark // <-- CAMBIO
                     )
                     Text(
-                        // "%.0f" significa 0 decimales.
                         "$ ${"%.0f".format(total)}",
                         style = MaterialTheme.typography.headlineSmall,
-                        color = MaterialTheme.colorScheme.onPrimary
+                        color = neonBlue // <-- CAMBIO: Acento en el precio
                     )
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // 9. BOTÓN DE PAGAR (CON ANIMACIÓN)
+                // BOTÓN DE PAGAR (CON ANIMACIÓN)
                 Button(
                     onClick = {
-                        // 1. Inicia la animación
                         isLoading = true
-
-                        // 2. Lanza una tarea asíncrona (para no bloquear la UI)
                         scope.launch {
-
-                            // Aquí es donde debes agregar la lógica de pago.
-                            // Por ejemplo:
-                            //
-                            // 1. Llamar a una función en el ViewModel:
-                            //    val resultadoPago = productoViewModel.procesarPago(carrito, usuario)
-                            //
-                            // 2. Validar el resultado:
-                            //    if (resultadoPago.esExitoso) {
-                            //        // Navegar a pantalla de éxito
-                            //        onNavigateToExito()
-                            //        // Vaciar el carrito
-                            //        productoViewModel.vaciarCarrito()
-                            //    } else {
-                            //        // Mostrar un mensaje de error
-                            //        mostrarError(resultadoPago.mensaje)
-                            //    }
-                            //
-
-                            // --------------------------------------------------
-                            // SIMULACIÓN DE PRUEBA
-                            // Dejamos el círculo girando por 3 segundos para
-                            // simular una llamada a una API o base de datos.
-                            delay(3000L)
-                            // --------------------------------------------------
-
-                            // 3. Al terminar (sea exitoso o no), detiene la animación
+                            delay(1500L)
                             isLoading = false
-                            onNavigateToPedidoExitoso()
+                            onNavigateToFormularioInvitado()
                         }
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    enabled = !isLoading, // Deshabilita el botón mientras 'isLoading' es 'true'
+                    enabled = !isLoading,
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.onSurface,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
+                        containerColor = neonBlue, // <-- CAMBIO
+                        contentColor = Color.Black // <-- CAMBIO
                     )
                 ) {
-                    // 10. CONTENIDO ANIMADO DEL BOTÓN
-                    // 'AnimatedContent' observa el 'targetState' (isLoading).
-                    // Cuando cambia, aplica una animación de fundido (fade)
-                    // entre el contenido antiguo y el nuevo.
                     AnimatedContent(
                         targetState = isLoading,
                         label = "AnimacionBotonPagar"
                     ) { estaCargando ->
                         if (estaCargando) {
-                            // Si 'isLoading' es true, muestra el círculo
                             CircularProgressIndicator(
-                                modifier = Modifier.size(24.dp), // Tamaño del texto
-                                color = MaterialTheme.colorScheme.onPrimary,
+                                modifier = Modifier.size(24.dp),
+                                color = Color.Black, // <-- CAMBIO: Para que combine con el texto
                                 strokeWidth = 3.dp
                             )
                         } else {
-                            // Si 'isLoading' es false, muestra el texto
                             Text(
                                 "Ir a Pagar",
                                 style = MaterialTheme.typography.titleMedium
@@ -256,10 +174,6 @@ fun CarritoScreenCompact(
     }
 }
 
-/**
- * COMPOSABLE AISLADO PARA MOSTRAR UN ÚNICO ITEM EN EL CARRITO.
- * Recibe el 'item' a mostrar y las 3 funciones de acción (eventos).
- */
 @Composable
 fun ProductoItemCarrito(
     item: CarritoItem,
@@ -267,87 +181,83 @@ fun ProductoItemCarrito(
     onDisminuir: () -> Unit,
     onEliminar: () -> Unit
 ) {
-    // Calculamos el subtotal (precio * cantidad) solo para este item
     val subtotalItem = item.producto.precio * item.cantidad
 
-    // Fila 1: Información (Nombre, Precio Unitario, Subtotal)
+    // Fila 1: Información
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Columna para Nombre y Precio Unitario
         Column(
-            modifier = Modifier.weight(1f) // 'weight(1f)' hace que ocupe todo el espacio
-            // que dejen los otros elementos de la Row.
+            modifier = Modifier.weight(1f)
         ) {
             Text(
                 text = item.producto.nombre,
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimary
+                color = textOnDark // <-- CAMBIO
             )
             Text(
-                // Precio unitario
                 text = "$ ${"%.0f".format(item.producto.precio)} c/u",
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.7f) // Un poco transparente
+                color = textOnDark.copy(alpha = 0.7f) // <-- CAMBIO
             )
         }
-
-        // Muestra el subtotal de este item
         Text(
-            // Subtotal
             text = "$ ${"%.0f".format(subtotalItem)}",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onPrimary,
+            color = neonBlue, // <-- CAMBIO: Acento en el subtotal
             modifier = Modifier.padding(horizontal = 8.dp)
         )
     }
 
-    // Fila 2: Controles (Botones +, -, y eliminar)
+    // Fila 2: Controles
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // Separa los controles de cantidad y el de eliminar
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Controles de Cantidad (+ / -)
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Botón -
-            // 'OutlinedIconButton' es un botón solo con borde
-            OutlinedIconButton(onClick = onDisminuir, modifier = Modifier.size(36.dp)) {
+            OutlinedIconButton(
+                onClick = onDisminuir,
+                modifier = Modifier.size(36.dp),
+                border = BorderStroke(1.dp, neonBlueDim) // <-- CAMBIO
+            ) {
                 Icon(
                     Icons.Filled.Remove,
                     "Disminuir",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = textOnDark // <-- CAMBIO
                 )
             }
-            // Cantidad
             Text(
                 text = "${item.cantidad}",
                 style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onPrimary,
+                color = textOnDark, // <-- CAMBIO
                 textAlign = TextAlign.Center,
-                modifier = Modifier.width(40.dp) // Ancho fijo para que no "salte"
+                modifier = Modifier.width(40.dp)
             )
-            // Botón +
-            OutlinedIconButton(onClick = onAumentar, modifier = Modifier.size(36.dp)) {
+            OutlinedIconButton(
+                onClick = onAumentar,
+                modifier = Modifier.size(36.dp),
+                border = BorderStroke(1.dp, neonBlueDim) // <-- CAMBIO
+            ) {
                 Icon(
                     Icons.Filled.Add,
                     "Aumentar",
-                    tint = MaterialTheme.colorScheme.onPrimary
+                    tint = textOnDark // <-- CAMBIO
                 )
             }
         }
 
-        // Botón Eliminar
         IconButton(onClick = onEliminar) {
             Icon(
                 Icons.Filled.Delete,
                 "Eliminar producto",
-                tint = MaterialTheme.colorScheme.error // Usamos el color de "error" (rojo)
+                // El color de error (rojo) suele estar bien, incluso en temas gamer
+                tint = MaterialTheme.colorScheme.error
             )
         }
     }
