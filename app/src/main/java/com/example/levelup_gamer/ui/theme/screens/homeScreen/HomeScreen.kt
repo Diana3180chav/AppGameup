@@ -24,11 +24,15 @@ fun  HomeScreen(
         )
         WindowWidthSizeClass.Medium -> HomeScreenMedium(
             onNavigateToRegister = onNavigateToRegister,
-            onNavigateToLogin = onNavigateToLogin
+            onNavigateToLogin = onNavigateToLogin,
+            onNavigateToCarrito = onNavigateToCarrito,
+            productoViewModel = productoViewModel
         )
         WindowWidthSizeClass.Expanded -> HomeScreenExpanded(
             onNavigateToRegister = onNavigateToRegister,
-            onNavigateToLogin = onNavigateToLogin
+            onNavigateToLogin = onNavigateToLogin,
+            onNavigateToCarrito = onNavigateToCarrito,
+            productoViewModel = productoViewModel
         )
     }
 }

@@ -58,7 +58,6 @@ import com.example.levelup_gamer.ui.theme.neonBlueDim
 fun HomeScreenCompact(
     onNavigateToRegister: () -> Unit,
     onNavigateToLogin: () -> Unit,
-    // Parámetros añadidos:
     onNavigateToCarrito: () -> Unit,
     productoViewModel: ProductoViewModel
 ) {

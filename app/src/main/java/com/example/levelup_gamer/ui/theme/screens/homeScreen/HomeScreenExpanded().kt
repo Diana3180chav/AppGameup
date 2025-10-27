@@ -34,12 +34,15 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.rememberCoroutineScope
 import com.example.levelup_gamer.ui.theme.screens.ModalDrawer.MyModalDrawer
+import com.example.levelup_gamer.viewmodel.ProductoViewModel
 import kotlinx.coroutines.launch
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenExpanded(onNavigateToRegister: () -> Unit,
-                       onNavigateToLogin: () -> Unit) {//con esta función establecemos las principales características del contenedor y del diseño
+                       onNavigateToLogin: () -> Unit,
+                       onNavigateToCarrito: () -> Unit,
+                       productoViewModel: ProductoViewModel) {//con esta función establecemos las principales características del contenedor y del diseño
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) //acá creamos el estado del menú inicialmente
 
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
