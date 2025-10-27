@@ -12,61 +12,49 @@ import com.example.levelup_gamer.model.CarritoItem
 import com.example.levelup_gamer.model.HistorialDePedidos
 import com.example.levelup_gamer.model.Invitado
 import com.example.levelup_gamer.model.PedidoGuardado
-import com.google.gson.Gson // Importamos GSON, la librería que nos ayuda a convertir objetos a JSON
+import com.google.gson.Gson // Librería que usamos para convertir objetos a JSON y al revés
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
 
 /**
- * Ojo aquí, compañeros: Preferences DataStore (el que usamos) solo puede guardar
- * datos simples como Strings, Ints o Booleans. No puede guardar una List<PedidoGuardado>.
- *
- * La 'trampa' que hicimos fue:
- * 1. Usar GSON para convertir nuestra lista de pedidos completa a UN SOLO STRING en formato JSON.
- * 2. Guardar ese único string en DataStore.
- * 3. Para leer, hacemos lo inverso: leemos el string y GSON lo vuelve a convertir
- * en nuestros objetos Kotlin.
+ * Aquí utilizamos Preferences DataStore.
+ * Este DataStore solo guarda datos sencillos (Strings, Ints, Booleans).
+ * Entonces como nosotros necesitamos guardar una LISTA de pedidos completa,
+ * lo que hacemos es convertir esa lista a un solo String en formato JSON usando Gson.
+ * Luego guardamos ese String.
+ * Y cuando lo necesitamos leer, hacemos lo contrario: lo convertimos de JSON a objetos Kotlin otra vez.
  */
 
-
-/**
- * Aquí creamos la instancia de DataStore. Usamos 'by preferencesDataStore'
- * para que se cree como un Singleton (una sola instancia para toda la app).
- * El 'name' es el nombre del archivo físico donde se guardarán los datos.
- */
 private val Context.preferencesDataStore: DataStore<Preferences> by preferencesDataStore(
-    name = "historial_pedidos_prefs"
+    name = "historial_pedidos_prefs" // Nombre del archivo donde se guardará todo
 )
 
 /**
- * Esta es nuestra clase Repositorio.
- * El trabajo de esta clase es ser la ÚNICA que sabe cómo hablar con el DataStore.
- * Los ViewModels no tienen idea de si guardamos en JSON, en SQL o en la nube.
- * Solo le piden al repositorio "guarda este pedido".
- * Esto se llama Abstracción y es una buena práctica.
+ * Esta clase es nuestro "Repositorio".
+ * La idea es que los ViewModels no tengan que saber cómo guardamos los datos.
+ * Solo le piden al repositorio: "Guarda esto" o "Dame esto".
+ * Esto hace el código más limpio y fácil de mantener.
  */
 class HistorialRepository(private val context: Context) {
 
-    // 1. Instancia de Gson que usaremos para convertir a/desde JSON.
+    // Gson para transformar objetos <-> JSON
     private val gson = Gson()
 
-    // 2. Aquí definimos la 'llave' (el nombre) con la que vamos a guardar
-    //    nuestro string JSON en el DataStore. Es como una llave de un HashMap.
+    // Llave para guardar el historial en DataStore (como si fuera el nombre en un diccionario)
     private object Keys {
         val HISTORIAL_JSON = stringPreferencesKey("historial_pedidos_json")
     }
 
-    // 3. Flow de lectura
     /**
-     * Este 'Flow' es para LEER los datos.
-     * El ViewModel puede "observar" este flujo. Si los datos en el DataStore
-     * cambian, este Flow lo emitirá automáticamente.
+     * Flow para leer el historial guardado.
+     * El ViewModel puede observar este Flow y cuando algo cambie, automáticamente se actualiza.
      */
     val historialFlow: Flow<HistorialDePedidos> = context.preferencesDataStore.data
         .catch { exception ->
-            // Si hay un error al leer (ej. archivo corrupto), en vez de crashear,
-            // le decimos que emita una lista vacía.
+            // Si hay un error leyendo (por ejemplo, archivo corrupto),
+            // no rompemos la app, devolvemos una lista vacía.
             if (exception is IOException) {
                 emit(emptyPreferences())
             } else {
@@ -74,32 +62,24 @@ class HistorialRepository(private val context: Context) {
             }
         }
         .map { preferences ->
-            // DataStore nos da un objeto 'Preferences'. Usamos '.map' para
-            // transformarlo en lo que nuestra app necesita: un 'HistorialDePedidos'.
-
-            // Leemos el string JSON usando nuestra llave.
+            // Aquí convertimos el JSON guardado a nuestros objetos Kotlin.
             val jsonString = preferences[Keys.HISTORIAL_JSON]
 
             if (jsonString.isNullOrEmpty()) {
-                // Si no hay nada guardado (ej. la primera vez que se usa la app),
-                // devolvemos una lista vacía.
+                // Si aún no hay historial, devolvemos uno vacío.
                 HistorialDePedidos(emptyList())
             } else {
-                // Aquí GSON hace la "deserialización":
-                // convierte el string JSON de vuelta a nuestras clases de Kotlin.
                 gson.fromJson(jsonString, HistorialDePedidos::class.java)
             }
         }
 
     /**
-     * Esta es la función CLAVE para GUARDAR.
-     * La marcamos como 'suspend' porque debe llamarse desde una corrutina (en el ViewModel).
-     * Esto evita que el guardado (que es lento) bloquee la pantalla del usuario.
+     * Esta función guarda un nuevo pedido en el historial.
+     * Es 'suspend' porque se ejecuta dentro de una corrutina para no bloquear la pantalla.
      */
     suspend fun agregarPedido(invitado: Invitado, carrito: List<CarritoItem>, total: Double) {
 
-        // Creamos el objeto 'PedidoGuardado' con los datos que nos llegaron
-        // y le ponemos un ID y timestamp (la hora actual).
+        // Creamos el objeto del pedido con su ID y hora actual.
         val nuevoPedido = PedidoGuardado(
             id = System.currentTimeMillis().toString(),
             timestamp = System.currentTimeMillis(),
@@ -108,60 +88,41 @@ class HistorialRepository(private val context: Context) {
             total = total
         )
 
-        // Usamos '.edit' porque es la forma segura y transaccional de escribir en DataStore.
+        // Editamos el DataStore (lectura -> modificación -> escritura)
         context.preferencesDataStore.edit { preferences ->
 
-            // ¡IMPORTANTE! Ponemos todo en un 'try-catch'.
-            // Si el JSON guardado antes está 'corrupto' (ej. cambiamos una clase),
-            // 'gson.fromJson' fallará. Con esto, evitamos que la app crashee.
             try {
-                // --- Este es el patrón: LEER-MODIFICAR-ESCRIBIR ---
-
-                // 1. LEER el string JSON que ya estaba guardado.
+                // 1. Leemos el JSON actual (si existe)
                 val jsonStringActual = preferences[Keys.HISTORIAL_JSON]
 
-                // 2. MODIFICAR: Convertimos ese JSON a nuestros objetos Kotlin.
+                // 2. Convertimos el JSON a una lista real de pedidos
                 val historialActual = if (jsonStringActual.isNullOrEmpty()) {
-                    HistorialDePedidos(emptyList()) // O creamos uno vacío si no había nada.
+                    HistorialDePedidos(emptyList())
                 } else {
                     gson.fromJson(jsonStringActual, HistorialDePedidos::class.java)
                 }
 
-                // Creamos una lista NUEVA que tiene los pedidos antiguos + el nuevo.
+                // 3. Agregamos el nuevo pedido a la lista
                 val pedidosActualizados = historialActual.pedidos + nuevoPedido
                 val historialNuevo = HistorialDePedidos(pedidosActualizados)
 
-                // Convertimos la lista COMPLETA (con el pedido nuevo) de vuelta a JSON.
+                // 4. Convertimos la lista nueva nuevamente a JSON
                 val nuevoJsonString = gson.toJson(historialNuevo)
 
-                // --- LOG FORMATEADO ---
-                // Este es nuestro log formateado para ver en la terminal
-                // que los datos se guardaron correctamente.
-                val logFormateado = """
-                    
-                    -------------------------------------------
-                    NUEVO PEDIDO GUARDADO (ID: ${nuevoPedido.id})
-                    -------------------------------------------
-                    CLIENTE:
-                       Nombre:    ${nuevoPedido.invitado.nombre}
-                       Email:     ${nuevoPedido.invitado.email}
-                       Teléfono:  ${nuevoPedido.invitado.telefono}
-                       Dirección: ${nuevoPedido.invitado.direccion}
-                    PEDIDO:
-                       Total:     $ ${"%.0f".format(nuevoPedido.total)}
-                       Productos: ${nuevoPedido.items.joinToString { it.producto.nombre + " x" + it.cantidad }}
-                    -------------------------------------------
-                """.trimIndent() // trimIndent() limpia los espacios iniciales
+                // Log para ver que todo se guardó bien
+                Log.d("MI_APP_DEBUG", """
+                    --- NUEVO PEDIDO GUARDADO ---
+                    Cliente: ${nuevoPedido.invitado.nombre}
+                    Total: $${"%.0f".format(nuevoPedido.total)}
+                    ---------------------------------
+                """.trimIndent())
 
-                Log.d("MI_APP_DEBUG", logFormateado)
-
-                // 3. ESCRIBIR: Sobrescribimos el JSON antiguo con el JSON nuevo.
+                // 5. Guardamos el JSON actualizado
                 preferences[Keys.HISTORIAL_JSON] = nuevoJsonString
 
             } catch (e: Exception) {
-                // Si el 'try' falla (probablemente por Gson), imprimimos el error
-                // en Logcat en lugar de crashear la app.
-                Log.e("MI_APP_DEBUG", "¡¡CRASH DENTRO DEL REPOSITORIO!!", e)
+                // Si algo falla convirtiendo el JSON, lo mostramos en logs y no crashea.
+                Log.e("MI_APP_DEBUG", "Error guardando el pedido", e)
             }
         }
     }
