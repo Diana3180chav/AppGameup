@@ -4,10 +4,10 @@
     <selectionStates>
       <SelectionState runConfigName="Levelup_gamer.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2025-10-23T19:37:09.823249200Z">
+        <DropdownSelection timestamp="2025-10-26T23:08:57.793857500Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Isabe\.android\avd\Medium_Phone.avd" />
+              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\chifu\.android\avd\Medium_Phone.avd" />
             </handle>
           </Target>
         </DropdownSelection>

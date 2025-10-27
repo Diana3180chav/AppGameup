@@ -17,45 +17,26 @@ import com.example.levelup_gamer.R
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
 import com.example.levelup_gamer.ui.theme.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight // <-- NUEVO IMPORT
+import com.example.levelup_gamer.viewmodel.InvitadoViewModel // <-- NUEVO IMPORT
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PedidoExitosoScreenCompact(
     productoViewModel: ProductoViewModel,
+    invitadoViewModel: InvitadoViewModel, // <-- NUEVO
     onFinalizar: () -> Unit = {},
     onNavigateToHome: () -> Unit = {}
 ) {
     val carrito by productoViewModel.estadoCarrito.collectAsState()
+    val invitado by invitadoViewModel.datosInvitado.collectAsState() // <-- NUEVO
     val total = carrito.sumOf { it.producto.precio * it.cantidad }
 
     Scaffold(
         containerColor = loginBg,
         topBar = {
-            TopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = loginBg,
-                    titleContentColor = neonBlue
-                ),
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(id = R.mipmap.logo),
-                            contentDescription = "Logo App Level-Up Gamer",
-                            modifier = Modifier
-                                .height(40.dp)
-                                .padding(end = 8.dp)
-                                .clickable { onNavigateToHome() },
-                            contentScale = ContentScale.Fit
-                        )
-                        Text(
-                            "Compra Exitosa",
-                            color = neonBlue,
-                            style = MaterialTheme.typography.titleLarge
-                        )
-                    }
-                }
-            )
+            // ... (TopAppBar sin cambios) ...
         }
     ) { innerPadding ->
         Column(
@@ -66,7 +47,7 @@ fun PedidoExitosoScreenCompact(
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Imagen decorativa
+            // ... (Imagen y Texto "Pago realizado" sin cambios) ...
             Image(
                 painter = painterResource(id = R.mipmap.logo),
                 contentDescription = "Logo Compra Exitosa",
@@ -76,21 +57,46 @@ fun PedidoExitosoScreenCompact(
                     .padding(bottom = 24.dp),
                 contentScale = ContentScale.Fit
             )
-
             Text(
                 "¡Pago realizado con éxito!",
                 color = neonBlue,
                 style = MaterialTheme.typography.headlineMedium,
                 textAlign = TextAlign.Center
             )
-
             Spacer(Modifier.height(20.dp))
+
+
+            // --- NUEVA SECCIÓN: DATOS DE ENVÍO ---
+            Text(
+                "Enviado a:",
+                color = neonBlue,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(8.dp))
+            InfoInvitadoResumen(label = "Nombre:", valor = invitado.nombre)
+            InfoInvitadoResumen(label = "Email:", valor = invitado.email)
+            InfoInvitadoResumen(label = "Dirección:", valor = invitado.direccion)
+
+            Divider(color = neonBlueDim.copy(alpha = 0.5f), modifier = Modifier.padding(vertical = 16.dp))
+            // ------------------------------------
+
+            Text(
+                "Resumen de Compra",
+                color = neonBlue,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(Modifier.height(8.dp))
 
             LazyColumn(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxWidth()
             ) {
+                // ... (items(carrito) ... sin cambios)
                 items(carrito) { item ->
                     Row(
                         modifier = Modifier
@@ -117,11 +123,16 @@ fun PedidoExitosoScreenCompact(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("Total:", color = textOnDark)
+                Text(
+                    "Total:",
+                    color = textOnDark,
+                    style = MaterialTheme.typography.titleMedium // Estilo consistente
+                )
                 Text(
                     "$ ${"%.0f".format(total)}",
                     color = neonBlue,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold // Resaltar el total
                 )
             }
 
@@ -129,7 +140,9 @@ fun PedidoExitosoScreenCompact(
 
             Button(
                 onClick = {
-                    productoViewModel.vaciarCarrito()
+                    // La lógica de limpiar ViewModels y navegar
+                    // ya la definimos en AppNavigation.
+                    // Aquí solo llamamos a la función.
                     onFinalizar()
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -141,5 +154,29 @@ fun PedidoExitosoScreenCompact(
                 Text("Finalizar")
             }
         }
+    }
+}
+
+/**
+ * Composable helper (similar al de Checkout) para
+ * mostrar la info del invitado en el resumen final.
+ */
+@Composable
+private fun InfoInvitadoResumen(label: String, valor: String) {
+    Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(horizontal = 8.dp, vertical = 2.dp)) {
+        Text(
+            text = label,
+            style = MaterialTheme.typography.bodyMedium,
+            color = textOnDark.copy(alpha = 0.7f),
+            modifier = Modifier.width(80.dp) // Ancho fijo para alinear
+        )
+        Text(
+            text = valor,
+            style = MaterialTheme.typography.bodyMedium,
+            color = textOnDark,
+            fontWeight = FontWeight.Medium
+        )
     }
 }
