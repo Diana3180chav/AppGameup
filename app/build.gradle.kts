@@ -84,6 +84,10 @@ dependencies {
 
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    // Librería de Google para JSON
+    implementation("com.google.code.gson:gson:2.10.1")
+
 
 
 
