@@ -11,12 +11,19 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color // <-- IMPORTANTE
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.levelup_gamer.viewmodel.InvitadoViewModel
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
-import com.example.levelup_gamer.ui.theme.* // Importa tus colores (neonBlue, loginBg, etc.)
+import com.example.levelup_gamer.ui.theme.*
+
+// --- IMPORTS NUEVOS Y NECESARIOS ---
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import android.util.Log // Para los logs de depuración
+// ------------------------------------
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -31,22 +38,25 @@ fun CheckoutScreenCompact(
     val invitado by invitadoViewModel.datosInvitado.collectAsState()
     val total = carrito.sumOf { it.producto.precio * it.cantidad }
 
+    // --- ¡NECESARIO PARA LA CORRUTINA DEL BOTÓN! ---
+    val scope = rememberCoroutineScope()
+
     Scaffold(
-        containerColor = loginBg, // <-- CAMBIO: Fondo oscuro
+        containerColor = loginBg,
         topBar = {
             TopAppBar(
-                title = { Text("Resumen del Pedido", color = neonBlue) }, // <-- CAMBIO: Color acento
+                title = { Text("Resumen del Pedido", color = neonBlue) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.Filled.ArrowBack,
                             contentDescription = "Volver",
-                            tint = textOnDark // <-- CAMBIO: Color texto normal
+                            tint = textOnDark
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = loginBg // <-- CAMBIO: Integrado con fondo
+                    containerColor = loginBg
                 )
             )
         }
@@ -57,14 +67,13 @@ fun CheckoutScreenCompact(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            // --- Sección 1: Datos del Invitado ---
+            // --- (Sección 1, 2 y 3 no cambian) ---
             Text(
                 "Datos de Envío",
                 style = MaterialTheme.typography.titleLarge,
-                color = neonBlue // <-- CAMBIO: Color acento
+                color = neonBlue
             )
             Spacer(modifier = Modifier.height(8.dp))
-            // InfoInvitado ahora usará los colores del helper actualizado
             InfoInvitado(label = "Nombre:", valor = invitado.nombre)
             InfoInvitado(label = "Email:", valor = invitado.email)
             InfoInvitado(label = "Teléfono:", valor = invitado.telefono)
@@ -72,20 +81,18 @@ fun CheckoutScreenCompact(
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 16.dp),
-                color = neonBlueDim.copy(alpha = 0.5f) // <-- CAMBIO: Color divisor
+                color = neonBlueDim.copy(alpha = 0.5f)
             )
 
-            // --- Sección 2: Resumen de Productos ---
             Text(
                 "Resumen de Productos",
                 style = MaterialTheme.typography.titleLarge,
-                color = neonBlue // <-- CAMBIO: Color acento
+                color = neonBlue
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Lista de productos
             LazyColumn(
-                modifier = Modifier.weight(1f) // Ocupa el espacio disponible
+                modifier = Modifier.weight(1f)
             ) {
                 items(carrito) { item ->
                     Row(
@@ -96,11 +103,11 @@ fun CheckoutScreenCompact(
                     ) {
                         Text(
                             text = "${item.producto.nombre} x${item.cantidad}",
-                            color = textOnDark // <-- CAMBIO: Color texto normal
+                            color = textOnDark
                         )
                         Text(
                             text = "$ ${"%.0f".format(item.producto.precio * item.cantidad)}",
-                            color = neonBlue // <-- CAMBIO: Color acento para precio
+                            color = neonBlue
                         )
                     }
                 }
@@ -108,10 +115,9 @@ fun CheckoutScreenCompact(
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 16.dp),
-                color = neonBlueDim.copy(alpha = 0.5f) // <-- CAMBIO: Color divisor
+                color = neonBlueDim.copy(alpha = 0.5f)
             )
 
-            // --- Sección 3: Total ---
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -120,29 +126,34 @@ fun CheckoutScreenCompact(
                 Text(
                     "Total:",
                     style = MaterialTheme.typography.headlineSmall,
-                    color = textOnDark, // <-- CAMBIO: Color texto normal
+                    color = textOnDark,
                     fontWeight = FontWeight.Bold
                 )
                 Text(
                     "$ ${"%.0f".format(total)}",
                     style = MaterialTheme.typography.headlineSmall,
-                    color = neonBlue, // <-- CAMBIO: Destacamos el total
+                    color = neonBlue,
                     fontWeight = FontWeight.Bold
                 )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // --- Botón Confirmar Pedido ---
+            // --- !! BOTÓN CORREGIDO !! ---
             Button(
                 onClick = {
-                    // ... lógica ...
-                    onNavigateToPedidoExitoso()
+
+                    scope.launch {
+
+                        productoViewModel.guardarPedidoCompleto(invitado, carrito, total)
+
+                        onNavigateToPedidoExitoso()
+                    }
                 },
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = neonBlue, // <-- CAMBIO: Botón con acento
-                    contentColor = Color.Black  // <-- CAMBIO: Texto oscuro sobre botón brillante
+                    containerColor = neonBlue,
+                    contentColor = Color.Black
                 )
             ) {
                 Text(
@@ -164,13 +175,13 @@ private fun InfoInvitado(label: String, valor: String) {
         Text(
             text = label,
             style = MaterialTheme.typography.bodyLarge,
-            color = textOnDark.copy(alpha = 0.7f), // <-- CAMBIO: Label
-            modifier = Modifier.width(90.dp) // Ancho fijo para alinear
+            color = textOnDark.copy(alpha = 0.7f),
+            modifier = Modifier.width(90.dp)
         )
         Text(
             text = valor,
             style = MaterialTheme.typography.bodyLarge,
-            color = textOnDark, // <-- CAMBIO: Valor
+            color = textOnDark,
             fontWeight = FontWeight.Medium
         )
     }
