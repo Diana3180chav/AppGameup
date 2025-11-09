@@ -3,10 +3,7 @@ package com.example.levelup_gamer.screens.register
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -18,8 +15,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,17 +25,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberAsyncImagePainter
 import com.example.levelup_gamer.R
+import com.example.levelup_gamer.model.Comuna
+import com.example.levelup_gamer.model.Usuario
 import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
 import com.example.levelup_gamer.screens.register.Camera.CameraPreview
 import com.example.levelup_gamer.screens.register.Galeria.GaleriaPreview
+import com.example.levelup_gamer.viewmodel.RegionComunaViewModel
 import com.example.levelup_gamer.viewmodel.RegisterViewModel
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.example.levelup_gamer.model.Region
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -56,11 +61,22 @@ fun RegisterScreenCompact(
     val fotoUri by registerViewModel.fotoUri.collectAsState()
     val selectedImageUri by registerViewModel.selectedImageUri
     val galeriaAbierta by registerViewModel.galeriaAbierta.collectAsState()
+
+    val regionComunaViewModel: RegionComunaViewModel = viewModel()
+
+    LaunchedEffect(regionComunaViewModel) {
+        regionComunaViewModel.cargarRegiones()
+    }
+
+    val regiones by regionComunaViewModel.regiones.collectAsState()
+    val comunas by regionComunaViewModel.comunas.collectAsState()
+
     //var mostrarTexto by rememberSaveable { mutableStateOf(false) }
     //var toastMostrado by rememberSaveable { mutableStateOf(false) }
 
     Scaffold(
         containerColor = loginBg, // Usa el color de fondo del login (negro puro)
+        modifier = Modifier.imePadding(), // Permite que el teclado no oculte el contenido
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -75,7 +91,7 @@ fun RegisterScreenCompact(
                             modifier = Modifier
                                 .height(40.dp)
                                 .padding(end = 8.dp)
-                                .clickable{onNavigateToHome()},
+                                .clickable { onNavigateToHome() },
                             contentScale = ContentScale.Fit
                         )
                         Text(
@@ -89,11 +105,21 @@ fun RegisterScreenCompact(
         }
     ) { innerPadding ->
 
+        val scrollState = rememberScrollState() //nos ayuda a crear un estado que recuerda la posición actual del scroll
+        //selectores de región y comuna
+
+        var regionSeleccionada by remember { mutableStateOf<Region?>(null) }
+        var expandedRegion by remember { mutableStateOf(false) }
+
+        var comunaSeleccionada by remember { mutableStateOf<Comuna?>(null) }
+        var expandedComuna by remember { mutableStateOf(false) }
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
                 .padding(19.dp)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(scrollState), // habilita el desplazamiento vertical de la columna
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -239,6 +265,27 @@ fun RegisterScreenCompact(
                     colors = outlinedTextFieldColors() // Usa la función de colores
                 )
 
+                // --- Campo Apellido ---
+                OutlinedTextField(
+                    value = estado.apellido,
+                    onValueChange = viewModel::onApellidoChange,
+                    label = { Text("Apellido") },
+                    singleLine = true,
+                    isError = estado.errores.apellido!= null,
+                    supportingText = {
+                        estado.errores.apellido?.let {
+                            Text(
+                                it,
+                                color = errorRed
+                            )
+                        }
+                    }, // Usa errorRed
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = outlinedTextFieldColors() // Usa la función de colores
+                )
+
+
                 // --- Campo Correo electrónico ---
                 OutlinedTextField(
                     value = estado.email,
@@ -285,6 +332,140 @@ fun RegisterScreenCompact(
                     colors = outlinedTextFieldColors() // Usa la función de colores
                 )
 
+                // --- Campo Teléfono ---
+                OutlinedTextField(
+                    value = estado.telefono,
+                    onValueChange = viewModel::onTelefonoChange,
+                    label = { Text("Teléfono") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    isError = estado.errores.password != null,
+                    supportingText = {
+                        estado.errores.password?.let {
+                            Text(
+                                it,
+                                color = errorRed
+                            )
+                        }
+                    }, // Usa errorRed
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = outlinedTextFieldColors() // Usa la función de colores
+                )
+
+                // --- Campo Dirección ---
+                OutlinedTextField(
+                    value = estado.direccion,
+                    onValueChange = viewModel::onDireccionChange,
+                    label = { Text("Dirección") },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                    isError = estado.errores.direccion != null,
+                    supportingText = {
+                        estado.errores.direccion?.let {
+                            Text(
+                                it,
+                                color = errorRed
+                            )
+                        }
+                    }, // Usa errorRed
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = outlinedTextFieldColors() // Usa la función de colores
+                )
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedRegion,
+                    onExpandedChange = { expandedRegion = !expandedRegion }
+                ) {
+                    // --- Campo Región ---
+                    OutlinedTextField(
+                        value = regionSeleccionada?.nombre ?: "",
+                        onValueChange = { },
+                        readOnly = true,
+                        label = { Text("Región") },
+                        trailingIcon = {
+                            ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedRegion)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        colors = outlinedTextFieldColors()
+                    )
+
+                    ExposedDropdownMenu(
+                        expanded = expandedRegion,
+                        onDismissRequest = { expandedRegion = false }
+                    ) {
+                        regiones.forEach { region ->
+                            DropdownMenuItem(
+                                text = { Text(region.nombre) },
+                                onClick = {
+                                    regionSeleccionada = region
+                                    expandedRegion = false
+                                    regionComunaViewModel.cargarComunas(region.id)
+                                }
+                            )
+                        }
+                    }
+                }
+
+                LaunchedEffect(comunas) {
+                    println("📍 Comunas disponibles en UI (${comunas.size}):")
+                    comunas.forEach { println(" - ${it.nombre}") }
+                }
+
+                Text(
+                    text = "Total comunas cargadas: ${comunas.size}",
+                    color = Color.White
+                )
+
+                ExposedDropdownMenuBox(
+                    expanded = expandedComuna,
+                    onExpandedChange = { expandedComuna = !expandedComuna }
+                ) {
+                    OutlinedTextField(
+                        value = comunaSeleccionada?.nombre ?: "",
+                        onValueChange = {},
+                        readOnly = true,
+                        label = { Text("Comuna") },
+                        trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expandedComuna) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .menuAnchor(),
+                        colors = outlinedTextFieldColors()
+                    )
+
+                    if (comunas.isNotEmpty()) {
+                        ExposedDropdownMenu(
+                            expanded = expandedComuna,
+                            onDismissRequest = { expandedComuna = false }
+                        ) {
+                            comunas.forEach { comuna ->
+                                DropdownMenuItem(
+                                    text = { Text(comuna.nombre) },
+                                    onClick = {
+                                        comunaSeleccionada = comuna
+                                        expandedComuna = false
+                                    }
+                                )
+                            }
+                        }
+                    } else {
+                        if (expandedComuna) {
+                            ExposedDropdownMenu(
+                                expanded = true,
+                                onDismissRequest = { expandedComuna = false }
+                            ) {
+                                DropdownMenuItem(
+                                    text = { Text("Selecciona una región primero") },
+                                    onClick = { expandedComuna = false }
+                                )
+                            }
+                        }
+                    }
+                }
+
+
+
                 // --- Botón de Registro ---
                 Button(
                     onClick = {
@@ -294,6 +475,23 @@ fun RegisterScreenCompact(
 
 
                             if (viewModel.validarFormulario()) {
+
+                                //Creamos el objeto Usuario con los datos del formulario
+                                val usuario = Usuario(
+                                    rut = estado.rut,
+                                    userNam = estado.userNam,
+                                    email = estado.email,
+                                    password = estado.password,
+                                    telefono = estado.telefono,
+                                    direccion = estado.direccion,
+                                    region = estado.region,
+                                    comuna = estado.comuna
+                                )
+
+                                //Llamamos al ViewModel para enviar el usuario al backend
+
+                                viewModel.fetchPost(usuario)
+
                                 val toast = Toast.makeText(
                                     context,
                                     "Registro exitoso",
@@ -301,6 +499,7 @@ fun RegisterScreenCompact(
                                 )
 
                                 toast.show()
+
 
                                 delay(1000)
                                 toast.cancel()

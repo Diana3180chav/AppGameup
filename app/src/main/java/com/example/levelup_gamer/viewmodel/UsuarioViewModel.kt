@@ -2,16 +2,23 @@ package com.example.levelup_gamer.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.levelup_gamer.model.Usuario
 import com.example.levelup_gamer.model.UsuarioErrores
+import com.example.levelup_gamer.repository.repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class UsuarioViewModel : ViewModel() {
 
     //Este es el estado interno del mutable
     private val _estado = MutableStateFlow(Usuario())
+
+    private val repository = repository()
+
+    private val _getList = MutableStateFlow<List<Usuario>>(emptyList())
 
     //Acá exponemos el estado para la UI
     val estado: StateFlow<Usuario> =_estado
@@ -32,6 +39,10 @@ class UsuarioViewModel : ViewModel() {
         _estado.update { it.copy(userNam = valor, errores = it.errores.copy(userNam = null))}
     }
 
+    fun onApellidoChange(valor : String){
+        _estado.update { it.copy(apellido = valor, errores = it.errores.copy(apellido = null))}
+    }
+
     //Correo
     fun onEmailChange(valor : String) {
         _estado.update { it.copy(email = valor, errores = it.errores.copy(email = null))}
@@ -42,6 +53,22 @@ class UsuarioViewModel : ViewModel() {
         _estado.update { it.copy(password = valor, errores = it.errores.copy(password = null))}
     }
 
+    fun onTelefonoChange(valor : String) {
+        _estado.update { it.copy(telefono = valor, errores = it.errores.copy(telefono = null))}
+    }
+
+    fun onDireccionChange(valor : String) {
+        _estado.update { it.copy(direccion = valor, errores = it.errores.copy(direccion = null))}
+    }
+
+    fun onRegionChange( valor : String ){
+        _estado.update { it.copy(region = valor, errores = it.errores.copy(region = null))}
+
+    }
+
+    fun onComunaChange( valor : String ){
+        _estado.update { it.copy(comuna = valor, errores = it.errores.copy(comuna = null))}
+    }
 
     fun validarFormulario(): Boolean {
         val estadoActual = _estado.value
@@ -63,6 +90,18 @@ class UsuarioViewModel : ViewModel() {
         _estado.update { it.copy(errores = errores) }
 
         return !hayErrrores
+    }
+
+    fun fetchPost(usuario: Usuario){
+        viewModelScope.launch {
+            try {
+                val nuevoUsuario = repository.crearUsuario(usuario)
+
+                _getList.value = _getList.value + nuevoUsuario
+            } catch (e: Exception){
+                println("Error al cargar los datos ${e.localizedMessage}")
+            }
+        }
     }
 
     fun limpiarCampos(){ //limpiamos los campos
