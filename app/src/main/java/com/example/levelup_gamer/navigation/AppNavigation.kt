@@ -9,6 +9,7 @@ import com.example.levelup_gamer.ui.theme.screens.home.HomeScreen
 import com.example.levelup_gamer.screens.login.LoginScreen
 import com.example.levelup_gamer.screens.register.RegisterScreen
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
+import androidx.compose.ui.platform.LocalContext
 // 1. IMPORTAR EL VIEWMODEL DE PRODUCTO
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
 // 2. IMPORTAR LA NUEVA PANTALLA DE CARRITO (que crearemos en el paso 3)
@@ -21,6 +22,8 @@ import com.example.levelup_gamer.screens.pedidoExitoso.PedidoExitosoScreen
 import com.example.levelup_gamer.viewmodel.InvitadoViewModel
 import com.example.levelup_gamer.screens.formularioinvitado.FormularioInvitadoScreen
 import com.example.levelup_gamer.screens.checkout.CheckoutScreen
+import com.example.levelup_gamer.datastore.HistorialRepository
+import com.example.levelup_gamer.viewmodel.ProductoViewModelFactory
 // ----------------------
 
 
@@ -28,9 +31,19 @@ import com.example.levelup_gamer.screens.checkout.CheckoutScreen
 fun AppNavigation(){
     val navController = rememberNavController()
 
+    // Contexto actual (lo necesita el repositorio)
+    val context = LocalContext.current
+
+    //  Creamos el repositorio
+    val historialRepository = HistorialRepository(context)
+
+    // Usamos la fábrica personalizada
+    val productoViewModel: ProductoViewModel = viewModel(
+        factory = ProductoViewModelFactory(historialRepository)
+    )
+
     // Creamos los ViewModels aquí para compartirlos en todas las pantallas
     val usuarioViewModel: UsuarioViewModel = viewModel()
-    val productoViewModel: ProductoViewModel = viewModel()
     val registerViewModel: RegisterViewModel = viewModel()
 
     // --- NUEVO VIEWMODEL DE INVITADO ---
