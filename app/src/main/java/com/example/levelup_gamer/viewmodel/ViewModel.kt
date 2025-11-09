@@ -36,7 +36,7 @@ class ViewModel : ViewModel(){
     }
 
 
-    private fun fetchPost(usuario: Usuario){
+    /*fun fetchPost(usuario: Usuario){
         viewModelScope.launch {
             try {
                 val nuevoUsuario = repository.crearUsuario(usuario)
@@ -46,6 +46,5 @@ class ViewModel : ViewModel(){
                 println("Error al cargar los datos ${e.localizedMessage}")
             }
         }
-    }
-
+    }*/
 }

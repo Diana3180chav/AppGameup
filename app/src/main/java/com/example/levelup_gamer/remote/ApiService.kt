@@ -1,9 +1,12 @@
 package com.example.levelup_gamer.remote
 
+import com.example.levelup_gamer.model.Comuna
+import com.example.levelup_gamer.model.Region
 import com.example.levelup_gamer.model.Usuario
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -14,5 +17,11 @@ interface ApiService {
     //Nos ayuda a crear un usuario
     @POST("/usuarios")
     suspend fun crearUsuario(@Body usuario: Usuario): Usuario
+
+    @GET("regiones")
+    suspend fun getRegiones(): List<Region>
+
+    @GET("comunas/region/{id}")
+    suspend fun getComunas(@Path("id") id: Long): List<Comuna>
 
 }

@@ -5,9 +5,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 
+    private const val BASE_URL = "http://10.0.2.2:8080/api/"
+
     val api: ApiService by lazy{
         Retrofit.Builder()
-            .baseUrl("https:////localhost:3306/level_up_store_db") //URL Base de la API
+            .baseUrl(BASE_URL) //URL Base de la API
             .addConverterFactory(GsonConverterFactory.create()) // Conversor JSON
             .build()
             .create(ApiService::class.java) //Implementa la interfaz ApiService

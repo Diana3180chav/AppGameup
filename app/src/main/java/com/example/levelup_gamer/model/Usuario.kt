@@ -5,11 +5,13 @@ package com.example.levelup_gamer.model
 data class Usuario(
     val rut : String = "",
     val userNam : String = "",
-    //val apellido : String = "",
+    val apellido : String = "",
     val email : String = "",
     val password : String = "",
-    //val direccion : String = "",
-    //var telefono: String = "",
+    var telefono: String = "",
+    val direccion : String = "",
+    val region : String = "",
+    val comuna : String = "",
     val errores: UsuarioErrores = UsuarioErrores()
 )
 
