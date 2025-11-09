@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewModelScope
 import coil.compose.rememberAsyncImagePainter
 import com.example.levelup_gamer.R
 import com.example.levelup_gamer.ui.theme.* // Importa los colores personalizados
@@ -301,6 +302,15 @@ fun RegisterScreenCompact(
                                 )
 
                                 toast.show()
+
+                                /*
+                                val nuevoUsuario = com.example.levelup_gamer.model.Usuario(
+                                    rut = estado.rut,
+                                    userNam = estado.userNam,
+                                    email = estado.email,
+                                    password = estado.password
+                                )*/
+
 
                                 delay(1000)
                                 toast.cancel()
