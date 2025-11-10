@@ -6,22 +6,22 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.levelup_gamer.ui.theme.screens.home.HomeScreen
-import com.example.levelup_gamer.screens.login.LoginScreen
-import com.example.levelup_gamer.screens.register.RegisterScreen
+import com.example.levelup_gamer.ui.screens.login.LoginScreen
+import com.example.levelup_gamer.ui.screens.register.RegisterScreen
 import com.example.levelup_gamer.viewmodel.UsuarioViewModel
 import androidx.compose.ui.platform.LocalContext
 // 1. IMPORTAR EL VIEWMODEL DE PRODUCTO
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
 // 2. IMPORTAR LA NUEVA PANTALLA DE CARRITO (que crearemos en el paso 3)
-import com.example.levelup_gamer.screens.carrito.CarritoScreen
+import com.example.levelup_gamer.ui.screens.carrito.CarritoScreen
 import com.example.levelup_gamer.viewmodel.RegisterViewModel
 import com.example.levelup_gamer.viewmodel.LoginViewModel
-import com.example.levelup_gamer.screens.pedidoExitoso.PedidoExitosoScreen
+import com.example.levelup_gamer.ui.screens.pedidoExitoso.PedidoExitosoScreen
 
 // --- NUEVOS IMPORTS ---
 import com.example.levelup_gamer.viewmodel.InvitadoViewModel
-import com.example.levelup_gamer.screens.formularioinvitado.FormularioInvitadoScreen
-import com.example.levelup_gamer.screens.checkout.CheckoutScreen
+import com.example.levelup_gamer.ui.screens.formularioinvitado.FormularioInvitadoScreen
+import com.example.levelup_gamer.ui.screens.checkout.CheckoutScreen
 import com.example.levelup_gamer.datastore.HistorialRepository
 import com.example.levelup_gamer.viewmodel.ProductoViewModelFactory
 // ----------------------
