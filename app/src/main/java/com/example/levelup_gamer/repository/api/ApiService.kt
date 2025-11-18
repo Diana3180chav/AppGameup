@@ -1,4 +1,4 @@
-package com.example.levelup_gamer.remote
+package com.example.levelup_gamer.repository.api
 
 import com.example.levelup_gamer.model.Comuna
 import com.example.levelup_gamer.model.Region

@@ -4,8 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.levelup_gamer.model.Comuna
 import com.example.levelup_gamer.model.Region
-import com.example.levelup_gamer.remote.RetrofitInstance
-import com.example.levelup_gamer.remote.RetrofitInstance.api
+import com.example.levelup_gamer.repository.api.RetrofitInstance
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

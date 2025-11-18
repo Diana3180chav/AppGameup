@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.levelup_gamer.model.Usuario
 import com.example.levelup_gamer.model.UsuarioErrores
-import com.example.levelup_gamer.repository.repository
+import com.example.levelup_gamer.repository.data.repository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
