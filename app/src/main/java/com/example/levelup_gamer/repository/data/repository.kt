@@ -1,7 +1,7 @@
-package com.example.levelup_gamer.repository
+package com.example.levelup_gamer.repository.data
 
 import com.example.levelup_gamer.model.Usuario
-import com.example.levelup_gamer.remote.RetrofitInstance
+import com.example.levelup_gamer.repository.api.RetrofitInstance
 
 
 class repository {

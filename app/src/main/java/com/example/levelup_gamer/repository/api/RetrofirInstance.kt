@@ -1,4 +1,4 @@
-package com.example.levelup_gamer.remote
+package com.example.levelup_gamer.repository.api
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
