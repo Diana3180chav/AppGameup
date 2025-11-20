@@ -8,7 +8,6 @@ import org.junit.Rule
 import org.junit.Test
 import io.mockk.mockk
 import io.mockk.verify
-import io.mockk.verify
 
 class LoginScreenTest {
 
