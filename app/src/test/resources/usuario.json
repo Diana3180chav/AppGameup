@@ -1,0 +1,12 @@
+{
+  "rut": "1-9",
+  "userNam": "Pedro",
+  "apellido": "Gómez",
+  "email": "pedro@test.com",
+  "password": "1234",
+  "telefono": "987654321",
+  "direccion": "Mi casa 123",
+  "region": "Metropolitana",
+  "comuna": "Santiago",
+  "errores": { }
+}

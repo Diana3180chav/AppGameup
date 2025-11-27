@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.implementation
 
 plugins {
     alias(libs.plugins.android.application)
@@ -141,17 +140,18 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 
-    // -------- Kotest (solo para tests locales) --------
+    // -------- Kotest --------
     testImplementation("io.kotest:kotest-runner-junit5:5.8.1")
     testImplementation("io.kotest:kotest-assertions-core:5.8.1")
     testImplementation("io.kotest:kotest-property:5.8.1")
-
     // -------- MockK --------
-    testImplementation("io.mockk:mockk:1.13.9")
-    androidTestImplementation("io.mockk:mockk-android:1.13.9")
+        testImplementation("io.mockk:mockk:1.13.9")
+        androidTestImplementation("io.mockk:mockk-android:1.13.9")
 
     // -------- coroutines-test --------
-    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
-    androidTestImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0")
-    testImplementation(kotlin("test"))
+        testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+
+    // -------- MockWebServer --------
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.14")
+
 }
