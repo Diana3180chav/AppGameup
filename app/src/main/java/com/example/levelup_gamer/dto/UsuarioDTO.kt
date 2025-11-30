@@ -8,7 +8,7 @@ data class UsuarioDTO(
     val contrasena: String,
     val telefono: String,
     val direccion: String,
-    val rol: String = "USER",
+    val rol: String = "CLIENTE",
     val regionId: Long,
     val comunaId: Long
 )

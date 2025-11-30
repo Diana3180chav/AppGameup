@@ -4,6 +4,12 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import androidx.lifecycle.viewModelScope
+import com.example.levelup_gamer.dto.LoginRequest
+import com.example.levelup_gamer.dto.LoginResponse
+import com.example.levelup_gamer.repository.api.RetrofitInstance
+import kotlinx.coroutines.launch
+
 
 data class ErroresLogin(
     val email: String? = null,
@@ -58,19 +64,25 @@ class LoginViewModel : ViewModel() {
     }
 
     fun iniciarSesion(
-        onSuccess: () -> Unit = {},
+        onSuccess: (LoginResponse) -> Unit = {},
         onError: (String) -> Unit = {}
     ) {
         val st = _estadoLogin.value
-        val credencialesOk = (st.email == "demo@demo.com" && st.password == "123456")
-        if (credencialesOk) {
-            _loginExitoso.value = true
-            onSuccess()
-        } else {
-            _loginExitoso.value = false
-            onError("Credenciales inválidas")
+
+        viewModelScope.launch {
+            try {
+                val response = RetrofitInstance.api.login(
+                    LoginRequest(email = st.email, password = st.password)
+                )
+                _loginExitoso.value = true
+                onSuccess(response)
+            } catch (e: Exception) {
+                _loginExitoso.value = false
+                onError("Credenciales inválidas")
+            }
         }
     }
+
 
 }
 

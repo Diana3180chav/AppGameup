@@ -51,7 +51,7 @@ fun LoginScreenCompact(
                             modifier = Modifier
                                 .height(40.dp)
                                 .padding(end = 8.dp)
-                                .clickable{onNavigateToHome()},  // estamos ocupando la propiedad clickable para derivar al usuario al home
+                                .clickable { onNavigateToHome() },  // estamos ocupando la propiedad clickable para derivar al usuario al home
                             contentScale = ContentScale.Fit
                         )
                         Text(
@@ -130,7 +130,8 @@ fun LoginScreenCompact(
                     onClick = {
                         if (viewModel.validarLogin()) {
                             viewModel.iniciarSesion( // comentario
-                                onSuccess = onLoginSuccess,
+                                onSuccess = { response ->
+                                    onLoginSuccess() },
                                 onError = { msg ->
                                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
                                 }

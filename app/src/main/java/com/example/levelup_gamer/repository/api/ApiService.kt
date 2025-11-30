@@ -1,5 +1,7 @@
 package com.example.levelup_gamer.repository.api
 
+import com.example.levelup_gamer.dto.LoginRequest
+import com.example.levelup_gamer.dto.LoginResponse
 import com.example.levelup_gamer.dto.UsuarioDTO
 import com.example.levelup_gamer.model.Comuna
 import com.example.levelup_gamer.model.Region
@@ -18,6 +20,10 @@ interface ApiService {
     //Nos ayuda a crear un usuario
     @POST("auth/register")
     suspend fun crearUsuario(@Body usuarioDTO: UsuarioDTO): Usuario
+
+    @POST("auth/login")
+    suspend fun login(@Body loginRequest: LoginRequest): LoginResponse
+
 
     @GET("regiones")
     suspend fun getRegiones(): List<Region>
