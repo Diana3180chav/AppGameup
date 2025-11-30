@@ -129,7 +129,7 @@ fun LoginScreenCompact(
                 Button(
                     onClick = {
                         if (viewModel.validarLogin()) {
-                            viewModel.iniciarSesion(
+                            viewModel.iniciarSesion( // comentario
                                 onSuccess = onLoginSuccess,
                                 onError = { msg ->
                                     Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
