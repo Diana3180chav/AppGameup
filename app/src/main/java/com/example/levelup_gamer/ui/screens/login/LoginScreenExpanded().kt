@@ -132,7 +132,8 @@ fun LoginScreenExpanded(
                     onClick = {
                         if (viewModel.validarLogin()) {
                             viewModel.iniciarSesion(
-                                onSuccess = onLoginSuccess,
+                                onSuccess = { response ->
+                                    onLoginSuccess() },
                                 onError = { msg -> Toast.makeText(context, msg, Toast.LENGTH_SHORT).show() }
                             )
                         }

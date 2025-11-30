@@ -465,47 +465,63 @@ fun RegisterScreenCompact(
                 Button(
                     onClick = {
 
-                        CoroutineScope(Dispatchers.Main).launch{
+                        CoroutineScope(Dispatchers.Main).launch {
                             cargando = true
-
 
                             if (viewModel.validarFormulario()) {
 
-                                //Creamos el objeto Usuario con los datos del formulario
-                                val usuario = Usuario(
-                                    rut = estado.rut,
-                                    userNam = estado.userNam,
-                                    email = estado.email,
-                                    password = estado.password,
-                                    telefono = estado.telefono,
-                                    direccion = estado.direccion,
-                                    region = estado.region,
-                                    comuna = estado.comuna
-                                )
+                                // Validamos que se haya seleccionado región y comuna
+                                if (regionSeleccionada != null && comunaSeleccionada != null) {
 
-                                //Llamamos al ViewModel para enviar el usuario al backend
+                                    // Creamos el objeto Usuario con los datos del formulario
+                                    val usuario = Usuario(
+                                        rut = estado.rut,
+                                        userNam = estado.userNam,
+                                        apellido = estado.apellido,
+                                        email = estado.email,
+                                        password = estado.password,
+                                        telefono = estado.telefono,
+                                        direccion = estado.direccion
+                                    )
 
-                                viewModel.fetchPost(usuario)
+                                    // Llamamos al ViewModel para enviar el usuario al backend
+                                    viewModel.fetchPost(
+                                        usuario = usuario,
+                                        regionSeleccionada = regionSeleccionada!!,
+                                        comunaSeleccionada = comunaSeleccionada!!
+                                    )
 
-                                val toast = Toast.makeText(
-                                    context,
-                                    "Registro exitoso",
-                                    Toast.LENGTH_LONG
-                                )
+                                    val toast = Toast.makeText(
+                                        context,
+                                        "Registro exitoso",
+                                        Toast.LENGTH_LONG
+                                    )
+                                    toast.show()
 
-                                toast.show()
+                                    delay(1000)
+                                    toast.cancel()
+                                    cargando = false
 
+                                    // Limpiamos campos y navegamos al login
+                                    viewModel.limpiarCampos()
+                                    viewModel.registrarUsuario()
+                                    onNavigateToLogin()
 
-                                delay(1000)
-                                toast.cancel()
-                                cargando = false
-                                viewModel.limpiarCampos()
-                                viewModel.registrarUsuario()
-                                onNavigateToLogin()
+                                } else {
+                                    // Mensaje si no se seleccionó región o comuna
+                                    Toast.makeText(
+                                        context,
+                                        "Selecciona región y comuna",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    cargando = false
+                                }
+
                             } else {
                                 cargando = false
                             }
                         }
+
                     },
                     enabled = !cargando, // Deshabilita el botón si está cargando
                     modifier = Modifier.fillMaxWidth(),
@@ -514,17 +530,17 @@ fun RegisterScreenCompact(
                         contentColor = Color.Black
                     )
                 ) {
-                    if(cargando){
+                    if (cargando) {
                         CircularProgressIndicator(
                             modifier = Modifier.size(24.dp),
                             strokeWidth = 2.dp,
-                            color = Color.White // Usa el color de fondo del botón
+                            color = Color.White
                         )
                     } else {
                         Text("Registrarse")
                     }
-
                 }
+
 
                 if (registrado) {
                     viewModel.limpiarRegistroExitoso()
