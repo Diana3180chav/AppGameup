@@ -3,6 +3,9 @@ package com.example.levelup_gamer.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.levelup_gamer.dto.UsuarioDTO
+import com.example.levelup_gamer.model.Comuna
+import com.example.levelup_gamer.model.Region
 import com.example.levelup_gamer.model.Usuario
 import com.example.levelup_gamer.model.UsuarioErrores
 import com.example.levelup_gamer.repository.data.repository
@@ -92,17 +95,31 @@ class UsuarioViewModel : ViewModel() {
         return !hayErrrores
     }
 
-    fun fetchPost(usuario: Usuario){
+    fun fetchPost(usuario: Usuario, regionSeleccionada: Region, comunaSeleccionada: Comuna){
         viewModelScope.launch {
             try {
-                val nuevoUsuario = repository.crearUsuario(usuario)
+                val usuarioDTO = UsuarioDTO(
+                    rut = usuario.rut,
+                    nombre = usuario.userNam,       // ojo: tu back espera "nombre"
+                    apellido = usuario.apellido,
+                    correo = usuario.email,
+                    contrasena = usuario.password,
+                    telefono = usuario.telefono,
+                    direccion = usuario.direccion,
+                    regionId = regionSeleccionada.id,
+                    comunaId = comunaSeleccionada.id
+                )
+
+                val nuevoUsuario = repository.crearUsuario(usuarioDTO)
 
                 _getList.value = _getList.value + nuevoUsuario
+
             } catch (e: Exception){
-                println("Error al cargar los datos ${e.localizedMessage}")
+                println("Error al registrar usuario: ${e.localizedMessage}")
             }
         }
     }
+
 
     fun limpiarCampos(){ //limpiamos los campos
         _estado.value = Usuario()

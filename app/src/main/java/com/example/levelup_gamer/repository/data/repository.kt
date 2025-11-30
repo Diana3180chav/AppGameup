@@ -1,5 +1,6 @@
 package com.example.levelup_gamer.repository.data
 
+import com.example.levelup_gamer.dto.UsuarioDTO
 import com.example.levelup_gamer.model.Usuario
 import com.example.levelup_gamer.repository.api.RetrofitInstance
 
@@ -9,7 +10,7 @@ class repository {
         return RetrofitInstance.api.getUsuarios()
     }
 
-    suspend fun crearUsuario(usuario: Usuario): Usuario {
-        return RetrofitInstance.api.crearUsuario(usuario)
+    suspend fun crearUsuario(usuarioDTO: UsuarioDTO): Usuario {
+        return RetrofitInstance.api.crearUsuario(usuarioDTO)
     }
 }
