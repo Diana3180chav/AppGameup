@@ -22,12 +22,12 @@ data class EstadoLogin(
     val errores: ErroresLogin = ErroresLogin()
 )
 
-class LoginViewModel : ViewModel() {
+open class LoginViewModel : ViewModel() {
 
     private val _estadoLogin = MutableStateFlow(EstadoLogin())
     val estadoLogin: StateFlow<EstadoLogin> = _estadoLogin.asStateFlow()
 
-    private val _loginExitoso = MutableStateFlow(false)
+    val _loginExitoso = MutableStateFlow(false)
     val loginExitoso: StateFlow<Boolean> = _loginExitoso.asStateFlow()
 
     fun onEmailChange(nuevo: String) {
@@ -63,7 +63,7 @@ class LoginViewModel : ViewModel() {
         return ok
     }
 
-    fun iniciarSesion(
+    open fun iniciarSesion(
         onSuccess: (LoginResponse) -> Unit = {},
         onError: (String) -> Unit = {}
     ) {
