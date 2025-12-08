@@ -1,5 +1,6 @@
 package com.example.levelup_gamer.ui.theme.screens.home
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -51,6 +52,7 @@ import kotlinx.coroutines.launch
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import coil.compose.AsyncImage
 import com.example.levelup_gamer.ui.theme.neonBlueDim
 
 @OptIn( ExperimentalMaterial3Api::class)
@@ -63,6 +65,8 @@ fun HomeScreenCompact(
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed) //acá creamos el estado del menú inicialmente
     val scope = rememberCoroutineScope () // acá creamos el scope para abrir y cerrar el menú
+
+    val productos by productoViewModel.listaProductos.collectAsState()
 
     // Eliminamos la creación local del ViewModel:
     // val productoViewModel: ProductoViewModel = viewModel() // <- ELIMINADO
@@ -226,14 +230,62 @@ fun HomeScreenCompact(
                 )
                 //Listado de productos
 
+                LaunchedEffect(Unit) {
+                    productoViewModel.cargarProductos()
+                }
+
+
                 Column( // a cada producto en coliumna
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                     modifier = Modifier.fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally //centramos el contenido
 
                 ){
-                    //producto 1
+                    productos.forEach { producto ->
 
+                        Log.d("ProductoImagen", "URL: ${producto.imagenUrl}")
+
+
+                        // Imagen dinámica desde URL
+                        AsyncImage(
+                            model = producto.imagenUrl,
+                            contentDescription = producto.nombre,
+                            modifier = Modifier.height(120.dp)
+                        )
+
+                        Text(
+                            text = "${producto.nombre}\n$ ${producto.precio}",
+                            style = MaterialTheme.typography.titleSmall,
+                            color = MaterialTheme.colorScheme.onPrimary
+                        )
+
+                        Button(
+                            onClick = {
+                                val productoLocal = com.example.levelup_gamer.model.Producto(
+                                    idProducto = producto.id.toInt(),
+                                    nombre = producto.nombre,
+                                    precio = producto.precio
+                                )
+
+                                productoViewModel.agregarAlCarrito(productoLocal)
+
+                                Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
+                            },
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp)),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.onSurface,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            )
+                        ) {
+                            Text("Agregar al carrito")
+                        }
+                    }
+
+
+                    //producto 1
+                    /*
                     Image(
                         painter = painterResource(id = R.mipmap.producto1),
                         contentDescription = "Logo App Level UP Gamer",
@@ -264,10 +316,10 @@ fun HomeScreenCompact(
 
                     ){
                         Text("Agregar al carrito")
-                    }
+                    } */
 
                     //producto 2
-
+                    /*
                     Image(
                         painter = painterResource(id = R.mipmap.producto2),
                         contentDescription = "Logo App Level UP Gamer",
@@ -331,7 +383,7 @@ fun HomeScreenCompact(
 
                     ){
                         Text("Agregar al carrito")
-                    }
+                    }*/
                 }
             }
         }

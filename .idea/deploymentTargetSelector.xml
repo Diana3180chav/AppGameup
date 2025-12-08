@@ -22,6 +22,9 @@
       <SelectionState runConfigName="login_exitoso_cuando_credenciales_correctas()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
+      <SelectionState runConfigName="All Tests">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
     </selectionStates>
   </component>
 </project>

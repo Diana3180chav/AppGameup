@@ -13,4 +13,6 @@ class repository {
     suspend fun crearUsuario(usuarioDTO: UsuarioDTO): Usuario {
         return RetrofitInstance.api.crearUsuario(usuarioDTO)
     }
+
+    companion object
 }
