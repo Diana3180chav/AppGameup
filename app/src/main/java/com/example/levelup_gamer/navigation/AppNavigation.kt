@@ -23,8 +23,12 @@ import com.example.levelup_gamer.viewmodel.InvitadoViewModel
 import com.example.levelup_gamer.ui.screens.formularioinvitado.FormularioInvitadoScreen
 import com.example.levelup_gamer.ui.screens.checkout.CheckoutScreen
 import com.example.levelup_gamer.datastore.HistorialRepository
+import com.example.levelup_gamer.repository.data.ProductoRepository
 import com.example.levelup_gamer.viewmodel.ProductoViewModelFactory
 // ----------------------
+
+import com.example.levelup_gamer.repository.api.ProductoApiService
+import com.example.levelup_gamer.repository.api.RetrofitInstance
 
 
 @Composable
@@ -34,12 +38,17 @@ fun AppNavigation(){
     // Contexto actual (lo necesita el repositorio)
     val context = LocalContext.current
 
+    val productoApiService = RetrofitInstance.productoApiService
+
     //  Creamos el repositorio
     val historialRepository = HistorialRepository(context)
 
+    val productoRepository = ProductoRepository( productoApiService)
+
+
     // Usamos la fábrica personalizada
     val productoViewModel: ProductoViewModel = viewModel(
-        factory = ProductoViewModelFactory(historialRepository)
+        factory = ProductoViewModelFactory(historialRepository, productoRepository)
     )
 
     // Creamos los ViewModels aquí para compartirlos en todas las pantallas
