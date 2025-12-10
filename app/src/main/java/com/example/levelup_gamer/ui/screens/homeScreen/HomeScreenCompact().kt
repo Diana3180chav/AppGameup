@@ -28,6 +28,8 @@ import androidx.compose.ui.Alignment
 import com.example.levelup_gamer.ui.theme.fondoPrincipal
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -157,58 +159,58 @@ fun HomeScreenCompact(
             topBar = { // es similar al header
                 TopAppBar(
                     title = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically // alinea los elementos
+                        Column(
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            IconButton(
-                                onClick = {
-                                    scope.launch {
-                                        drawerState.open()
+                            // Primera fila: Menú + Logo
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                IconButton(
+                                    onClick = {
+                                        scope.launch { drawerState.open() }
                                     }
+                                ) {
+                                    Icon(
+                                        Icons.Filled.Menu,
+                                        contentDescription = "Menu principal",
+                                        tint = MaterialTheme.colorScheme.onPrimary
+                                    )
                                 }
-                            ) {
-                                Icon(
-                                    Icons.Filled.Menu, // llamamos un icono de menú y le damos estilos
-                                    contentDescription = "Menu principal",
-                                    tint = MaterialTheme.colorScheme.onPrimary
+
+                                Image(
+                                    painter = painterResource(id = R.mipmap.logo),
+                                    contentDescription = "Logo App Level UP Gamer",
+                                    modifier = Modifier
+                                        .height(40.dp)
+                                        .padding(end = 8.dp),
+                                    contentScale = ContentScale.Fit
                                 )
                             }
 
-                            Image(
-                                painter = painterResource(id = R.mipmap.logo),
-                                contentDescription = "Logo App Level UP Gamer",
+                            // Segunda fila: Carro alineado a la derecha
+                            Row(
                                 modifier = Modifier
-                                    .height(40.dp) // tamaño reducido para caber en el AppBar
-                                    .padding(end = 8.dp),
-                                contentScale = ContentScale.Fit
-                            )
-                        }
-                        Row( //Acá creamos una nueva fila para agregar el carro y alinearlo a la derecha
-
-                            modifier = Modifier
-                                .fillMaxWidth() // hace que ocupe todo el ancho disponible
-                                .padding(12.dp),
-                            horizontalArrangement = Arrangement.End // coloca el contenido a la derecha
-                        ) {
-                            Button(
-                                onClick = {
-                                    // onClick actualizado:
-                                    onNavigateToCarrito() // Redirige al carrito
-                                },
-                                colors = ButtonDefaults.buttonColors( //estilos
-                                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                                    contentColor = MaterialTheme.colorScheme.onSurface
-                                )
+                                    .fillMaxWidth()
+                                    .padding(12.dp),
+                                horizontalArrangement = Arrangement.End
                             ) {
-                                Icon(
-                                    Icons.Filled.ShoppingCart, // llamamos un icono de carrito y le damos estilos
-                                    contentDescription = "Carrito",
-                                    tint = MaterialTheme.colorScheme.onSurface
-                                )
-                                Text("Carro")
+                                Button(
+                                    onClick = { onNavigateToCarrito() },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = MaterialTheme.colorScheme.onPrimary,
+                                        contentColor = MaterialTheme.colorScheme.onSurface
+                                    )
+                                ) {
+                                    Icon(
+                                        Icons.Filled.ShoppingCart,
+                                        contentDescription = "Carrito",
+                                        tint = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Text("Carro")
+                                }
                             }
                         }
-
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = fondoPrincipal
@@ -235,18 +237,15 @@ fun HomeScreenCompact(
                 }
 
 
-                Column( // a cada producto en coliumna
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(20.dp),
                     modifier = Modifier.fillMaxSize(),
-                    horizontalAlignment = Alignment.CenterHorizontally //centramos el contenido
-
-                ){
-                    productos.forEach { producto ->
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    items(productos) { producto ->
 
                         Log.d("ProductoImagen", "URL: ${producto.imagenUrl}")
 
-
-                        // Imagen dinámica desde URL
                         AsyncImage(
                             model = producto.imagenUrl,
                             contentDescription = producto.nombre,
@@ -266,14 +265,12 @@ fun HomeScreenCompact(
                                     nombre = producto.nombre,
                                     precio = producto.precio
                                 )
-
                                 productoViewModel.agregarAlCarrito(productoLocal)
-
                                 Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
                             },
                             modifier = Modifier
                                 .padding(8.dp)
-                                .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp)),
+                                .border(2.dp, Color.White, RoundedCornerShape(24.dp)),
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.onSurface,
                                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -282,108 +279,6 @@ fun HomeScreenCompact(
                             Text("Agregar al carrito")
                         }
                     }
-
-
-                    //producto 1
-                    /*
-                    Image(
-                        painter = painterResource(id = R.mipmap.producto1),
-                        contentDescription = "Logo App Level UP Gamer",
-                        modifier = Modifier
-                            .height(80.dp) // tamaño reducido para caber en el AppBar
-                    )
-                    Text(
-                        text = "Play Station 5" +
-                                "\n $ 599.990",
-                        style = MaterialTheme.typography.titleSmall, //estilos al texto
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Button(
-                        onClick = {
-                            val producto = com.example.levelup_gamer.model.Producto(1, "Play Station 5", 599990.0)
-                            // Usamos el ViewModel que recibimos por parámetro
-                            productoViewModel.agregarAlCarrito(producto)
-
-                            Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
-                        },
-                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
-                            containerColor = MaterialTheme.colorScheme.onSurface,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-                            //colores en el borde
-                        ),
-                        modifier = Modifier.padding(8.dp)
-                            .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp))
-
-                    ){
-                        Text("Agregar al carrito")
-                    } */
-
-                    //producto 2
-                    /*
-                    Image(
-                        painter = painterResource(id = R.mipmap.producto2),
-                        contentDescription = "Logo App Level UP Gamer",
-                        modifier = Modifier
-                            .height(80.dp) // tamaño reducido para caber en el AppBar
-                    )
-                    Text(
-                        text = "Silla gamer" +
-                                "\n $ 79.990",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Button(
-                        onClick = {
-                            val producto = com.example.levelup_gamer.model.Producto(2, "Silla gamer", 79990.0)
-                            // Usamos el ViewModel que recibimos por parámetro
-                            productoViewModel.agregarAlCarrito(producto)
-
-                            Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
-                        },
-                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
-                            containerColor = MaterialTheme.colorScheme.onSurface,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-
-                        ),
-                        modifier = Modifier.padding(8.dp)
-                            .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp))
-                    ){
-                        Text("Agregar al carrito")
-                    }
-
-                    //producto 3
-
-                    Image(
-                        painter = painterResource(id = R.mipmap.producto3),
-                        contentDescription = "Logo App Level UP Gamer",
-                        modifier = Modifier
-                            .height(80.dp) // tamaño reducido para caber en el AppBar
-                    )
-                    Text(
-                        text = "PC Gamer" +
-                                "\n $ 899.990",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onPrimary
-                    )
-                    Button(
-                        onClick = {
-                            val producto = com.example.levelup_gamer.model.Producto(3, "PC Gamer", 899990.0)
-                            // Usamos el ViewModel que recibimos por parámetro
-                            productoViewModel.agregarAlCarrito(producto)
-
-                            Toast.makeText(context, "Producto agregado al carrito", Toast.LENGTH_SHORT).show()
-                        },
-                        colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
-                            containerColor = MaterialTheme.colorScheme.onSurface,
-                            contentColor = MaterialTheme.colorScheme.onPrimary
-
-                        ),
-                        modifier = Modifier.padding(8.dp)
-                            .border(2.dp, Color.White, shape = RoundedCornerShape(24.dp))
-
-                    ){
-                        Text("Agregar al carrito")
-                    }*/
                 }
             }
         }
