@@ -244,7 +244,10 @@ fun HomeScreenCompact(
                 ) {
                     items(productos) { producto ->
 
-                        Log.d("ProductoImagen", "URL: ${producto.imagenUrl}")
+                        //Log.d("ProductoImagen", "URL: ${producto.imagenUrl}")
+                        //Log.d("ProductoImagen", "URL: ${producto.precio}")
+
+                        val precioFormateado = "%,d".format(producto.precio.toInt()) // acá formateamos visualmente el precio
 
                         AsyncImage(
                             model = producto.imagenUrl,
@@ -253,7 +256,8 @@ fun HomeScreenCompact(
                         )
 
                         Text(
-                            text = "${producto.nombre}\n$ ${producto.precio}",
+
+                            text = "$$precioFormateado",
                             style = MaterialTheme.typography.titleSmall,
                             color = MaterialTheme.colorScheme.onPrimary
                         )
