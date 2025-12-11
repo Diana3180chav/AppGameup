@@ -4,6 +4,8 @@ import androidx.compose.ui.test.*
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.activity.ComponentActivity
 import com.example.levelup_gamer.viewmodel.LoginViewModel
+import com.example.levelup_gamer.dto.LoginResponse
+import com.example.levelup_gamer.dto.UsuarioDTO
 import org.junit.Rule
 import org.junit.Test
 import io.mockk.mockk
@@ -14,14 +16,43 @@ class LoginScreenTest {
     @get:Rule
     val rule = createAndroidComposeRule<ComponentActivity>()
 
+    class LoginViewModelFake : LoginViewModel() {
+        override fun iniciarSesion(
+            onSuccess: (LoginResponse) -> Unit,
+            onError: (String) -> Unit
+        ) {
+            _loginExitoso.value = true
+            // Creamos un LoginResponse con datos dummy
+            onSuccess(
+                LoginResponse(
+                    token = "demoToken123",
+                    usuario = UsuarioDTO(
+                        rut = "12345678-9",
+                        nombre = "Demo",
+                        apellido = "User",
+                        correo = "demo@demo.com",
+                        contrasena = "123456",
+                        telefono = "123456789",
+                        direccion = "Calle Falsa 123",
+                        rol = "CLIENTE",
+                        regionId = 1L,
+                        comunaId = 1L
+                    )
+                )
+            )
+        }
+    }
+
+
     @Test
     fun login_exitoso_cuando_credenciales_correctas() {
         // ViewModel real (sin lógica de red)
-        val vm = LoginViewModel()
+        val vm = LoginViewModelFake()
 
         // Mock de navegación:
         val onSuccess = mockk<() -> Unit>(relaxed = true)
 
+        // Composable bajo prueba
         rule.setContent {
             LoginScreenCompact(
                 viewModel = vm,

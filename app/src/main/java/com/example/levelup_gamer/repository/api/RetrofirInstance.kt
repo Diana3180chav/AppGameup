@@ -7,11 +7,21 @@ object RetrofitInstance {
 
     private const val BASE_URL = "http://10.0.2.2:8080/api/"
 
-    val api: ApiService by lazy{
+    // Instancia única de Retrofit
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL) //URL Base de la API
-            .addConverterFactory(GsonConverterFactory.create()) // Conversor JSON
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(ApiService::class.java) //Implementa la interfaz ApiService
+    }
+
+    // Servicio general
+    val api: ApiService by lazy {
+        retrofit.create(ApiService::class.java)
+    }
+
+    // Servicio de productos
+    val productoApiService: ProductoApiService by lazy {
+        retrofit.create(ProductoApiService::class.java)
     }
 }

@@ -1,14 +1,20 @@
 package com.example.levelup_gamer.viewmodel
 
 // Importamos el Repositorio (nuestro "conector" con DataStore)
+import android.util.Log
 import com.example.levelup_gamer.datastore.HistorialRepository
+import com.example.levelup_gamer.repository.data.ProductoRepository
 import com.example.levelup_gamer.model.Invitado
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.levelup_gamer.model.Producto
 import com.example.levelup_gamer.model.CarritoItem
+import com.example.levelup_gamer.model.ProductoResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
 // (Este import de Log ya no es necesario si quitamos los logs de depuración)
 // import android.util.Log
 
@@ -23,7 +29,8 @@ class ProductoViewModel(
     //    Recibimos el Repositorio en el constructor.
     //    No creamos el repositorio aquí, solo lo usamos.
     //    Esto nos lo "inyecta" AppNavigation (usando la ViewModelFactory).
-    private val historialRepository: HistorialRepository
+    private val historialRepository: HistorialRepository,
+    private val productoRepository: ProductoRepository
 ) : ViewModel() {
 
     // 2. ESTADO PRIVADO (Mutable):
@@ -43,6 +50,12 @@ class ProductoViewModel(
     //    Usamos '.update' y '.copy()' para actualizar el estado
     //    de forma "inmutable" (creamos una lista nueva, no modificamos la vieja).
     //    Esto es clave para que StateFlow detecte el cambio y avise a la UI.
+
+
+    private val _listaProductos = MutableStateFlow<List<ProductoResponse>>(emptyList())
+    val listaProductos: StateFlow<List<ProductoResponse>> = _listaProductos
+
+
     fun agregarAlCarrito(producto: Producto) {
         _estadoCarrito.update { listaActual ->
             val itemExistente = listaActual.find {
@@ -120,4 +133,17 @@ class ProductoViewModel(
         // Solo llamamos al repositorio y esperamos a que termine.
         historialRepository.agregarPedido(invitado, carrito, total)
     }
+
+    fun cargarProductos() {
+        viewModelScope.launch {
+            try {
+                _listaProductos.value = productoRepository.obtenerProductos()
+                Log.d("ProductoViewModel", "Productos cargados: ${_listaProductos.value}")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+
 }

@@ -153,5 +153,6 @@ dependencies {
 
     // -------- MockWebServer --------
     testImplementation("com.squareup.okhttp3:mockwebserver:5.0.0-alpha.14")
+    testImplementation(kotlin("test"))
 
 }

@@ -3,6 +3,7 @@ package com.example.levelup_gamer.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.levelup_gamer.datastore.HistorialRepository
+import com.example.levelup_gamer.repository.data.ProductoRepository
 
 /**
 Normalmente, creamos un ViewModel así: `viewModel()`.
@@ -16,7 +17,8 @@ La usamos en 'AppNavigation' al momento de crear el ViewModel.
 class ProductoViewModelFactory(
     // 1. Recibimos el Repositorio (nuestro conector a DataStore)
     //    AppNavigation es quien nos pasa este repositorio.
-    private val repository: HistorialRepository
+    private val repository: HistorialRepository,
+    private val productoRepository: ProductoRepository
 ) : ViewModelProvider.Factory {
 
     /**
@@ -31,7 +33,7 @@ class ProductoViewModelFactory(
             // ¡SÍ ES! Entonces, lo creamos manualmente
             // y le "inyectamos" (pasamos) el 'repository' en el constructor.
             @Suppress("UNCHECKED_CAST") // Suprimimos un warning de casteo
-            return ProductoViewModel(repository) as T
+            return ProductoViewModel(repository, productoRepository) as T
         }
 
         // Si nos piden crear cualquier otro ViewModel
