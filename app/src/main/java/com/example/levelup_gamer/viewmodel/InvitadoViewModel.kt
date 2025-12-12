@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import com.example.levelup_gamer.dto.UsuarioDTO
 
 /**
  * ViewModel que administra el estado del formulario del invitado.
@@ -44,6 +45,18 @@ class InvitadoViewModel : ViewModel() {
 
     fun onDireccionChange(direccion: String) {
         _datosInvitado.update { it.copy(direccion = direccion) }
+    }
+
+    // Carga los datos desde un usuario logueado (UsuarioDTO)
+    fun cargarDesdeUsuario(usuario: UsuarioDTO) {
+        _datosInvitado.update {
+            it.copy(
+                nombre = "${usuario.nombre} ${usuario.apellido}",
+                email = usuario.correo,
+                telefono = usuario.telefono,
+                direccion = usuario.direccion
+            )
+        }
     }
 
     /**

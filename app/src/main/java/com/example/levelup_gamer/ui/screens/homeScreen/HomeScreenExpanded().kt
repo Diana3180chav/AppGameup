@@ -45,6 +45,7 @@ import com.example.levelup_gamer.ui.theme.loginBg
 import com.example.levelup_gamer.ui.screens.ModalDrawer.MyModalDrawer
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
 import kotlinx.coroutines.launch
+import com.example.levelup_gamer.model.UserSession   // NUEVO
 
 @OptIn( ExperimentalMaterial3Api::class)
 @Composable
@@ -58,6 +59,8 @@ fun HomeScreenExpanded(onNavigateToRegister: () -> Unit,
 
     val context = LocalContext.current
 
+    val usuarioLogueado = UserSession.usuario
+
     val drawerContent: @Composable () -> Unit = {
         Column( // trabajamo el menú en columna
             modifier = Modifier
@@ -66,71 +69,103 @@ fun HomeScreenExpanded(onNavigateToRegister: () -> Unit,
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text("Menú", style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onPrimary) //le damos unos estilos
-            HorizontalDivider() //nos da una sepación entre elementos con una línea
+            //  Si hay usuario logueado
+            if (usuarioLogueado != null) {
+                Text(
+                    text = "Hola, ${usuarioLogueado.nombre} ${usuarioLogueado.apellido}",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                HorizontalDivider()
 
-            Button(onClick = {
-                onNavigateToLogin()//Esto nos indica qu cuando se presiona el botón algo pasará...
-                scope.launch { drawerState.close()}  //con esto se cierra el menú
-            },
-                colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
-                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                    contentColor = MaterialTheme.colorScheme.onSurface
+                Button(
+                    onClick = {
+                        // Limpiamos sesión y vamos al login
+                        UserSession.clear()
+                        onNavigateToLogin()
+                        scope.launch { drawerState.close() }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onPrimary,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Text("Cerrar sesión", style = MaterialTheme.typography.titleMedium)
+                }
+                HorizontalDivider()
+            } else {
+                //  Invitado (no hay sesión)
+                Text(
+                    "Menú",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+                HorizontalDivider()
 
-                ),
-                modifier = Modifier.padding(8.dp) //indicamos cuanto espacio tendrá el botón
-            ) {
-                Text("Inicio sesón", style = MaterialTheme.typography.titleMedium)
+                Button(
+                    onClick = {
+                        onNavigateToLogin()
+                        scope.launch { drawerState.close() }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onPrimary,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    modifier = Modifier.padding(8.dp)
+                ) {
+                    Text("Inicio sesión", style = MaterialTheme.typography.titleMedium)
+                }
+                HorizontalDivider()
+
+                Button(
+                    onClick = {
+                        onNavigateToRegister()
+                        scope.launch { drawerState.close() }
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.onPrimary,
+                        contentColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    modifier = Modifier.padding(12.dp)
+                ) {
+                    Text(text = "Registro", style = MaterialTheme.typography.titleMedium)
+                }
+                HorizontalDivider()
             }
-            HorizontalDivider()
-            Button(onClick = {
-                onNavigateToRegister() // cuando se haga click en el botón, se redireccionará el usuario a Register
-                scope.launch{drawerState.close()}
-            },
-                colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
+
+            // Botón "Carro" (para ambos casos)
+            Button(
+                onClick = {
+                    onNavigateToCarrito()
+                    scope.launch { drawerState.close() }
+                },
+                colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.onPrimary,
                     contentColor = MaterialTheme.colorScheme.onSurface
-
                 ),
-                modifier = Modifier.padding(12.dp) // indicamos cuanto espacio tendrá el botón
-            ) {
-                Text(text = "Registro", style = MaterialTheme.typography.titleMedium)
-            }
-
-            HorizontalDivider()
-            Button(onClick = {
-                // onClick actualizado:
-                onNavigateToCarrito() // Redirige al carrito
-                scope.launch{drawerState.close()}
-            },
-                colors = ButtonDefaults.buttonColors( //le damos algunos estilos al botón
-                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                    contentColor = MaterialTheme.colorScheme.onSurface
-
-                ),
-                modifier = Modifier.padding(12.dp) // indicamos cuanto espacio tendrá el botón
+                modifier = Modifier.padding(12.dp)
             ) {
                 Icon(
-                    Icons.Filled.ShoppingCart, // llamamos un icono de carrito y le damos estilos
+                    Icons.Filled.ShoppingCart,
                     contentDescription = "Carrito",
                     tint = MaterialTheme.colorScheme.onSurface
                 )
                 Text(text = "Carro", style = MaterialTheme.typography.titleMedium)
             }
-
             HorizontalDivider()
-            IconButton(// se agrega un icono de una X para cerrar el menú
+
+            IconButton(
                 onClick = {
-                    scope.launch {
-                        drawerState.close()
-                    }
+                    scope.launch { drawerState.close() }
                 }
             ) {
                 Icon(
-                    Icons.Filled.Close, // llamamos un icono de menú y le damos estilos
+                    Icons.Filled.Close,
                     contentDescription = "Cerrar menú",
-                    tint = MaterialTheme.colorScheme.onSurface
+                    tint = MaterialTheme.colorScheme.onPrimary
                 )
+
             }
         }
     }
