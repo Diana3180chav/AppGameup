@@ -339,9 +339,9 @@ fun RegisterScreenCompact(
                     label = { Text("Teléfono") },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                    isError = estado.errores.password != null,
+                    isError = estado.errores.telefono != null,
                     supportingText = {
-                        estado.errores.password?.let {
+                        estado.errores.telefono?.let {
                             Text(
                                 it,
                                 color = errorRed
@@ -504,7 +504,7 @@ fun RegisterScreenCompact(
 
                                     // Limpiamos campos y navegamos al login
                                     viewModel.limpiarCampos()
-                                    viewModel.registrarUsuario()
+                                    viewModel.limpiarRegistroExitoso()
                                     onNavigateToLogin()
 
                                 } else {
