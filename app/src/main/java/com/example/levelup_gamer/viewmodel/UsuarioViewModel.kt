@@ -120,7 +120,6 @@ class UsuarioViewModel : ViewModel() {
         }
     }
 
-
     fun limpiarCampos(){ //limpiamos los campos
         _estado.value = Usuario()
     }
