@@ -9,6 +9,7 @@ import com.example.levelup_gamer.dto.LoginRequest
 import com.example.levelup_gamer.dto.LoginResponse
 import com.example.levelup_gamer.repository.api.RetrofitInstance
 import kotlinx.coroutines.launch
+import com.example.levelup_gamer.model.UserSession
 
 
 data class ErroresLogin(
@@ -74,8 +75,14 @@ open class LoginViewModel : ViewModel() {
                 val response = RetrofitInstance.api.login(
                     LoginRequest(email = st.email, password = st.password)
                 )
+
+                //  NUEVO: guardar la sesión del usuario
+                UserSession.token = response.token          // guardamos el token
+                UserSession.usuario = response.usuario      // guardamos los datos del usuario
+
                 _loginExitoso.value = true
                 onSuccess(response)
+
             } catch (e: Exception) {
                 _loginExitoso.value = false
                 onError("Credenciales inválidas")
