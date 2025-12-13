@@ -14,6 +14,10 @@ import androidx.compose.ui.graphics.Color // <-- CAMBIO: Necesario
 import androidx.compose.ui.unit.dp
 import com.example.levelup_gamer.viewmodel.InvitadoViewModel
 import com.example.levelup_gamer.ui.theme.* // Importa tus colores
+import com.example.levelup_gamer.model.UserSession
+import androidx.compose.runtime.LaunchedEffect
+
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -25,11 +29,17 @@ fun FormularioInvitadoScreenCompact(
     val invitado by invitadoViewModel.datosInvitado.collectAsState()
     val scrollState = rememberScrollState()
 
+    LaunchedEffect(Unit) {
+        UserSession.usuario?.let { usuario ->
+            invitadoViewModel.cargarDesdeUsuario(usuario)
+        }
+    }
+
     Scaffold(
         containerColor = loginBg, // <-- CAMBIO
         topBar = {
             TopAppBar(
-                title = { Text("Datos de Invitado", color = neonBlue) }, // <-- CAMBIO
+                title = { Text("Datos de Usuario", color = neonBlue) }, // <-- CAMBIO
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
