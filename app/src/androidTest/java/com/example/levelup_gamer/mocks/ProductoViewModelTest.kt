@@ -1,57 +1,84 @@
 package com.example.levelup_gamer.mocks
-
-import androidx.activity.ComponentActivity
-import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import com.example.levelup_gamer.datastore.HistorialRepository
+import com.example.levelup_gamer.repository.data.ProductoRepository
 import com.example.levelup_gamer.model.Producto
 import com.example.levelup_gamer.viewmodel.ProductoViewModel
 import io.mockk.mockk
-import junit.framework.TestCase
-import kotlinx.coroutines.test.runTest
-import org.junit.Rule
+import junit.framework.TestCase.assertEquals
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.*
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 
-//Acá testeamos la lógica de agregar un producto al carrito
-// El objetivo es validar que agregar un producto al carrito funciona correctamente.
+@OptIn(ExperimentalCoroutinesApi::class)
 class ProductoViewModelTest {
 
-    // Regla que permite crear un entorno mínimo de Activity para Compose.
-    // Aunque aquí el test es de lógica, la regla es útil si el ViewModel
-    // llega a usar states de Compose.
-    @get:Rule
-    val rule = createAndroidComposeRule<ComponentActivity>()
+    // Dispatcher de test para corrutinas
+    private val testDispatcher = StandardTestDispatcher()
+
+    // Mocks (FAKE)
+    private lateinit var historialRepository: HistorialRepository
+    private lateinit var productoRepository: ProductoRepository
+
+    // ViewModel bajo prueba
+    private lateinit var viewModel: ProductoViewModel
+
+    @Before
+    fun setup() {
+        // Reemplazamos Main dispatcher
+        Dispatchers.setMain(testDispatcher)
+
+        historialRepository = mockk(relaxed = true)
+        productoRepository = mockk(relaxed = true)
+
+        viewModel = ProductoViewModel(
+            historialRepository = historialRepository,
+            productoRepository = productoRepository
+        )
+    }
+
+    @After
+    fun tearDown() {
+        Dispatchers.resetMain()
+    }
 
     @Test
-    fun agregar_prducto() = runTest {
-
-        // Creamos un mock del repositorio.
-        //relaxed = true hace que MockK devuelva valores por defecto
-        val repo = mockk<HistorialRepository>(relaxed = true)
-
-        // Instanciamos el ViewModel usando el mock en lugar de un repositorio real.
-        val vm = ProductoViewModel(historialRepository = repo)
-
-        // Creamos un producto que posteriormente agregaremos al carrito.
+    fun agregar_producto() = runTest {
+        // GIVEN: un producto
         val producto = Producto(
             idProducto = 1,
             nombre = "Mouse Gamer",
-            precio = 10000.0,
+            precio = 10000.0
         )
 
-        // Ejecutamos la lógica que queremos testear
-        vm.agregarAlCarrito(producto)
+        // WHEN: agregamos el producto al carrito
+        viewModel.agregarAlCarrito(producto)
 
-        // Obtenemos el estado del carrito después de agregarlo.
-        val estado = vm.estadoCarrito.value
+        // THEN: verificamos el estado
+        val estado = viewModel.estadoCarrito.value
 
-        // Validamos (asserts) el comportamiento esperado:
-        // El carrito debe tener exactamente 1 item.
-        // La cantidad debe ser 1.
-        // El nombre debe coincidir con el del producto original.
-        TestCase.assertEquals(1, estado.size)
-        TestCase.assertEquals(1, estado[0].cantidad)
-        TestCase.assertEquals("Mouse Gamer", estado[0].producto.nombre)
-
+        assertEquals(1, estado.size)
+        assertEquals(1, estado[0].cantidad)
+        assertEquals("Mouse Gamer", estado[0].producto.nombre)
+        assertEquals(10000.0, estado[0].producto.precio)
     }
 
+    @Test
+    fun agregar_mismo_producto() = runTest {
+        val producto = Producto(
+            idProducto = 1,
+            nombre = "Mouse Gamer",
+            precio = 10000.0
+        )
+
+        viewModel.agregarAlCarrito(producto)
+        viewModel.agregarAlCarrito(producto)
+
+        val estado = viewModel.estadoCarrito.value
+
+        assertEquals(1, estado.size)
+        assertEquals(2, estado[0].cantidad)
+    }
 }

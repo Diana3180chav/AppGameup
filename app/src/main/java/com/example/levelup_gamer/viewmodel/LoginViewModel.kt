@@ -1,16 +1,17 @@
 package com.example.levelup_gamer.viewmodel
 
-import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import android.app.Application
+import android.content.Context
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.levelup_gamer.dto.LoginRequest
 import com.example.levelup_gamer.dto.LoginResponse
 import com.example.levelup_gamer.repository.api.RetrofitInstance
-import kotlinx.coroutines.launch
 import com.example.levelup_gamer.model.UserSession
-
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 data class ErroresLogin(
     val email: String? = null,
@@ -23,13 +24,18 @@ data class EstadoLogin(
     val errores: ErroresLogin = ErroresLogin()
 )
 
-open class LoginViewModel : ViewModel() {
+open class LoginViewModel(
+    application: Application
+) : AndroidViewModel(application) {
 
     private val _estadoLogin = MutableStateFlow(EstadoLogin())
     val estadoLogin: StateFlow<EstadoLogin> = _estadoLogin.asStateFlow()
 
     val _loginExitoso = MutableStateFlow(false)
     val loginExitoso: StateFlow<Boolean> = _loginExitoso.asStateFlow()
+
+    // ✅ SharedPreferences ÚNICO Y CONSISTENTE
+    private val prefs = application.getSharedPreferences("prefs", Context.MODE_PRIVATE)
 
     fun onEmailChange(nuevo: String) {
         _estadoLogin.value = _estadoLogin.value.copy(
@@ -76,9 +82,14 @@ open class LoginViewModel : ViewModel() {
                     LoginRequest(email = st.email, password = st.password)
                 )
 
-                //  NUEVO: guardar la sesión del usuario
-                UserSession.token = response.token          // guardamos el token
-                UserSession.usuario = response.usuario      // guardamos los datos del usuario
+                // 🔐 1️⃣ Guardar en memoria (opcional)
+                UserSession.token = response.token
+                UserSession.usuario = response.usuario
+
+                // 🔐 2️⃣ Guardar en SharedPreferences (OBLIGATORIO)
+                prefs.edit()
+                    .putString("jwt_token", response.token)
+                    .apply()
 
                 _loginExitoso.value = true
                 onSuccess(response)
@@ -89,7 +100,4 @@ open class LoginViewModel : ViewModel() {
             }
         }
     }
-
-
 }
-

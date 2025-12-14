@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
-class ViewModel : ViewModel(){
+open class ViewModel : ViewModel(){
 
     private val repository = repository()
     //flujo mutable que contiene la lista de los usuarios (por el momento)

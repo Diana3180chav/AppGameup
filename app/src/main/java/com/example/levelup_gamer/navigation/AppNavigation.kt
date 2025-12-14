@@ -29,6 +29,9 @@ import com.example.levelup_gamer.viewmodel.ProductoViewModelFactory
 
 import com.example.levelup_gamer.repository.api.ProductoApiService
 import com.example.levelup_gamer.repository.api.RetrofitInstance
+import com.example.levelup_gamer.repository.data.OrdenRepository
+import com.example.levelup_gamer.viewmodel.OrdenViewModel
+import com.example.levelup_gamer.viewmodel.OrdenViewModelFactory
 
 
 @Composable
@@ -37,6 +40,13 @@ fun AppNavigation(){
 
     // Contexto actual (lo necesita el repositorio)
     val context = LocalContext.current
+
+    val ordenRepository = OrdenRepository(
+        RetrofitInstance.ordenApiService
+    )
+
+
+
 
     val productoApiService = RetrofitInstance.productoApiService
 
@@ -58,6 +68,11 @@ fun AppNavigation(){
     // --- NUEVO VIEWMODEL DE INVITADO ---
     val invitadoViewModel: InvitadoViewModel = viewModel()
     // ---------------------------------
+
+
+    val ordenViewModel: OrdenViewModel = viewModel(
+        factory = OrdenViewModelFactory( ordenRepository, context.getSharedPreferences("prefs", 0))
+    )
 
 
     NavHost(
@@ -110,10 +125,6 @@ fun AppNavigation(){
             CarritoScreen(
                 productoViewModel = productoViewModel,
                 onNavigateBack = { navController.popBackStack() },
-
-                // --- MODIFICADO ---
-                // Antes: onNavigateToPedidoExitoso = { navController.navigate("pedidoExitoso") }
-                // Ahora:
                 onNavigateToFormularioInvitado = { navController.navigate("formularioInvitado") }
             )
         }
@@ -133,9 +144,12 @@ fun AppNavigation(){
                 productoViewModel = productoViewModel,
                 invitadoViewModel = invitadoViewModel,
                 onNavigateBack = { navController.popBackStack() },
-                onNavigateToPedidoExitoso = { navController.navigate("pedidoExitoso") }
+                onNavigateToPedidoExitoso = { navController.navigate("pedidoExitoso") },
+                ordenViewModel = ordenViewModel // ✅ CORRECTO
             )
         }
+
+
 
         // --- MODIFICADO: PEDIDO EXITOSO ---
         composable("pedidoExitoso") {

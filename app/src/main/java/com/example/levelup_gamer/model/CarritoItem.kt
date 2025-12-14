@@ -11,6 +11,7 @@ import com.example.levelup_gamer.model.Producto // Asegúrate de que este import
  * Por ejemplo: "3 Teclados Gamer" sería un CarritoItem.
  */
 data class CarritoItem(
+
     /**
      * El objeto [Producto] completo que se está agregando.
      * Contiene toda la información del producto (nombre, precio, id, etc.).

@@ -1,52 +1,76 @@
 package com.example.levelup_gamer.ui.screens.checkout
 
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color // <-- IMPORTANTE
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.example.levelup_gamer.viewmodel.InvitadoViewModel
-import com.example.levelup_gamer.viewmodel.ProductoViewModel
-import com.example.levelup_gamer.ui.theme.* // Importa tus colores (neonBlue, loginBg, etc.)
+import com.example.levelup_gamer.ui.theme.*
+import com.example.levelup_gamer.viewmodel.*
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CheckoutScreenCompact(
     productoViewModel: ProductoViewModel,
     invitadoViewModel: InvitadoViewModel,
+    ordenViewModel: OrdenViewModel,
     onNavigateBack: () -> Unit,
     onNavigateToPedidoExitoso: () -> Unit
 ) {
-    // Observamos AMBOS ViewModels
+    // ---------- STATE ----------
     val carrito by productoViewModel.estadoCarrito.collectAsState()
     val invitado by invitadoViewModel.datosInvitado.collectAsState()
-    val total = carrito.sumOf { it.producto.precio * it.cantidad }
+    val uiState by ordenViewModel.uiState.collectAsState()
 
+    val total = carrito.sumOf { it.producto.precio * it.cantidad }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    // ---------- EFFECTOS ----------
+    LaunchedEffect(uiState) {
+        when (uiState) {
+            is OrdenUiState.Success -> {
+                ordenViewModel.resetState()
+                onNavigateToPedidoExitoso()
+            }
+
+            is OrdenUiState.Error -> {
+                snackbarHostState.showSnackbar(
+                    (uiState as OrdenUiState.Error).message
+                )
+                ordenViewModel.resetState()
+            }
+
+            else -> Unit
+        }
+    }
+
+    // ---------- UI ----------
     Scaffold(
-        containerColor = loginBg, // <-- CAMBIO: Fondo oscuro
+        snackbarHost = { SnackbarHost(snackbarHostState) },
+        containerColor = loginBg,
         topBar = {
             TopAppBar(
-                title = { Text("Resumen del Pedido", color = neonBlue) }, // <-- CAMBIO: Color acento
+                title = { Text("Resumen del Pedido", color = neonBlue) },
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
                             Icons.Filled.ArrowBack,
                             contentDescription = "Volver",
-                            tint = textOnDark // <-- CAMBIO: Color texto normal
+                            tint = textOnDark
                         )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = loginBg // <-- CAMBIO: Integrado con fondo
+                    containerColor = loginBg
                 )
             )
         }
@@ -57,36 +81,34 @@ fun CheckoutScreenCompact(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
-            // --- Sección 1: Datos del Invitado ---
+
+            // ---------- DATOS INVITADO ----------
             Text(
                 "Datos de Envío",
                 style = MaterialTheme.typography.titleLarge,
-                color = neonBlue // <-- CAMBIO: Color acento
+                color = neonBlue
             )
             Spacer(modifier = Modifier.height(8.dp))
-            // InfoInvitado ahora usará los colores del helper actualizado
-            InfoInvitado(label = "Nombre:", valor = invitado.nombre)
-            InfoInvitado(label = "Email:", valor = invitado.email)
-            InfoInvitado(label = "Teléfono:", valor = invitado.telefono)
-            InfoInvitado(label = "Dirección:", valor = invitado.direccion)
+
+            InfoInvitado("Nombre:", invitado.nombre)
+            InfoInvitado("Email:", invitado.email)
+            InfoInvitado("Teléfono:", invitado.telefono)
+            InfoInvitado("Dirección:", invitado.direccion)
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 16.dp),
-                color = neonBlueDim.copy(alpha = 0.5f) // <-- CAMBIO: Color divisor
+                color = neonBlueDim.copy(alpha = 0.5f)
             )
 
-            // --- Sección 2: Resumen de Productos ---
+            // ---------- RESUMEN PRODUCTOS ----------
             Text(
                 "Resumen de Productos",
                 style = MaterialTheme.typography.titleLarge,
-                color = neonBlue // <-- CAMBIO: Color acento
+                color = neonBlue
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Lista de productos
-            LazyColumn(
-                modifier = Modifier.weight(1f) // Ocupa el espacio disponible
-            ) {
+            LazyColumn(modifier = Modifier.weight(1f)) {
                 items(carrito) { item ->
                     Row(
                         modifier = Modifier
@@ -95,12 +117,12 @@ fun CheckoutScreenCompact(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "${item.producto.nombre} x${item.cantidad}",
-                            color = textOnDark // <-- CAMBIO: Color texto normal
+                            "${item.producto.nombre} x${item.cantidad}",
+                            color = textOnDark
                         )
                         Text(
-                            text = "$ ${"%.0f".format(item.producto.precio * item.cantidad)}",
-                            color = neonBlue // <-- CAMBIO: Color acento para precio
+                            "$ ${"%.0f".format(item.producto.precio * item.cantidad)}",
+                            color = neonBlue
                         )
                     }
                 }
@@ -108,45 +130,51 @@ fun CheckoutScreenCompact(
 
             HorizontalDivider(
                 modifier = Modifier.padding(vertical = 16.dp),
-                color = neonBlueDim.copy(alpha = 0.5f) // <-- CAMBIO: Color divisor
+                color = neonBlueDim.copy(alpha = 0.5f)
             )
 
-            // --- Sección 3: Total ---
+            // ---------- TOTAL ----------
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
                     "Total:",
                     style = MaterialTheme.typography.headlineSmall,
-                    color = textOnDark, // <-- CAMBIO: Color texto normal
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = textOnDark
                 )
                 Text(
                     "$ ${"%.0f".format(total)}",
                     style = MaterialTheme.typography.headlineSmall,
-                    color = neonBlue, // <-- CAMBIO: Destacamos el total
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    color = neonBlue
                 )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // --- Botón Confirmar Pedido ---
+            // ---------- BOTÓN CONFIRMAR ----------
             Button(
                 onClick = {
-                    // ... lógica ...
-                    onNavigateToPedidoExitoso()
+                    ordenViewModel.confirmarOrden(
+                        carrito = carrito,
+                        invitado = invitado
+                    )
+                    Log.d("CHECKOUT", "Botón Confirmar Pedido presionado")
                 },
                 modifier = Modifier.fillMaxWidth(),
+                enabled = uiState !is OrdenUiState.Loading,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = neonBlue, // <-- CAMBIO: Botón con acento
-                    contentColor = Color.Black  // <-- CAMBIO: Texto oscuro sobre botón brillante
+                    containerColor = neonBlue,
+                    contentColor = Color.Black
                 )
             ) {
                 Text(
-                    "Confirmar Pedido",
+                    text = if (uiState is OrdenUiState.Loading)
+                        "Procesando..."
+                    else
+                        "Confirmar Pedido",
                     style = MaterialTheme.typography.titleMedium
                 )
             }
@@ -154,23 +182,22 @@ fun CheckoutScreenCompact(
     }
 }
 
-/**
- * Composable helper para mostrar la info del invitado
- * de forma alineada (Colores actualizados).
- */
+/* ---------- COMPONENTE AUXILIAR ---------- */
 @Composable
 private fun InfoInvitado(label: String, valor: String) {
-    Row(modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp)) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 2.dp)
+    ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodyLarge,
-            color = textOnDark.copy(alpha = 0.7f), // <-- CAMBIO: Label
-            modifier = Modifier.width(90.dp) // Ancho fijo para alinear
+            modifier = Modifier.width(90.dp),
+            color = textOnDark.copy(alpha = 0.7f)
         )
         Text(
             text = valor,
-            style = MaterialTheme.typography.bodyLarge,
-            color = textOnDark, // <-- CAMBIO: Valor
+            color = textOnDark,
             fontWeight = FontWeight.Medium
         )
     }
